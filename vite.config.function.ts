@@ -16,7 +16,7 @@ export default defineConfig({
   build: {
     minify: true,
     lib: {
-      entry: "./src/main.tsx",
+      entry: "./src/mainFunction.ts",
       name: "DataIntegrationTool",
       fileName: () => `data-integration-tool.js`,
     },

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config vite.config.function.ts",
     "build": "tsc -b && vite build --config vite.config.function.ts",
     "build_ghpages": "tsc -b && vite build --config vite.config.ghpages.ts",
     "lint": "eslint .",
