@@ -19,12 +19,14 @@ module.exports = {
         },
         wpGreen: {
           DEFAULT: "#8DD0A4",
+          900: "#9AE0A5",
         },
         wpWhite: {
           DEFAULT: "#F6F9FB",
         },
         wpBrown: {
           DEFAULT: "#F2EFE6",
+          100: "#DDD6C2",
         },
       },
     },

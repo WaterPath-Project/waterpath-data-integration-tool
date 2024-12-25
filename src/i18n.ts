@@ -1,6 +1,16 @@
 import { initReactI18next } from "react-i18next";
 import i18n from "i18next";
 
+/**
+ * Initializes and configures the i18n instance for internationalization support in a React application.
+ *
+ * - Integrates `i18next` with `react-i18next` for seamless usage in React components.
+ * - Sets the default language to English (`en`) and specifies English as the fallback language.
+ * - Disables escaping for interpolation, as React handles XSS safety natively.
+ *
+ * @module i18n
+ * @see https://www.i18next.com/
+ */
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
@@ -12,12 +22,15 @@ i18n
     resources: {
       en: {
         translation: {
-          button: "Click me!",
-          title: "Are you sure?",
-          description:
-            "This action cannot be undone. This will permanently delete youraccount and remove your data from our servers.",
-          cancel: "Cancel",
-          continue: "Continue",
+          header: {
+            title: "MODEL",
+            subtitle: "WATERPATH TOOLKIT",
+          },
+          glowpa: {
+            title: "GloWPa version",
+            subtitle:
+              "Borem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a.",
+          },
         },
       },
     },

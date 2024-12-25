@@ -1,12 +1,7 @@
-import { PageContainer } from "./components/PageContainer";
+import { Home } from "./components/pages";
 
 function App() {
-  return (
-    <PageContainer>
-      <p className="font-inter">HELLO</p>
-      <p className="font-outfit">HELLO</p>
-    </PageContainer>
-  );
+  return <Home />;
 }
 
 export default App;
