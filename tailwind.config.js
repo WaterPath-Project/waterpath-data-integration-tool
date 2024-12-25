@@ -14,8 +14,13 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        wpGray: {
+          100: "#EEF2F5",
+        },
         wpBlue: {
           DEFAULT: "#0B4159",
+          500: "#B7D7EF",
+          100: "#CAD8E3",
         },
         wpGreen: {
           DEFAULT: "#8DD0A4",

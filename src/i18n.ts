@@ -31,6 +31,16 @@ i18n
             subtitle:
               "Borem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a.",
           },
+          customizeModel: {
+            title: "Customize Model",
+            subtitle:
+              "Version 1.0 of GloWPa includes the following data sources. Customize it to fit your needs.",
+            simulate: "Simulate",
+            livestockEmissions: "Livestock Emissions",
+            concentrations: "Concentrations",
+            emissions: "Human Emissions",
+            risk: "Risk",
+          },
         },
       },
     },

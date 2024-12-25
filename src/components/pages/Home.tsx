@@ -1,10 +1,13 @@
-import { GloWPaVersion } from "../organisms";
+import { CustomizeModel, GloWPaVersion } from "../organisms";
 import { BasicLayout } from "../templates";
 
 export function Home() {
   return (
     <BasicLayout>
-      <GloWPaVersion />
+      <div className="flex flex-col gap-8">
+        <GloWPaVersion />
+        <CustomizeModel />
+      </div>
     </BasicLayout>
   );
 }
