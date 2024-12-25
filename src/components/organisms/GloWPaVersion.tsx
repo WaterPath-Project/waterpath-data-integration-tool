@@ -15,8 +15,8 @@ export function GloWPaVersion() {
 
   return (
     <div className="bg-wpBrown rounded-2xl w-full">
-      <div className="flex justify-between items-center p-10 w-full gap-10">
-        <div className="flex flex-col w-1/2">
+      <div className="flex flex-col sm:flex-row justify-between items-center p-10 w-full gap-10">
+        <div className="flex flex-col sm:w-1/2">
           <span className="font-outfit font-extrabold text-[2rem] text-wpBlue">
             {t("glowpa.title")}
           </span>

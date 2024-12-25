@@ -8,7 +8,7 @@ export function SimulateCheckbox() {
       <span className="inter text-sm font-semibold">
         {t("customizeModel.simulate")}
       </span>
-      <div className="flex flex-row gap-10 items-center">
+      <div className="flex flex-col gap-2 sm:flex-row sm:gap-10 sm:items-center">
         <div className="flex flex-row gap-2 items-center">
           <Checkbox id="emmisions" />
           <label htmlFor="emmisions" className="text-sm font-inter ">
