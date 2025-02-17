@@ -40,6 +40,7 @@ i18n
             concentrations: "Concentrations",
             emissions: "Human Emissions",
             risk: "Risk",
+            countriesOfInterest: "Countries of Interest",
           },
         },
       },
