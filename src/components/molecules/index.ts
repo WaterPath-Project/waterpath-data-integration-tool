@@ -1,2 +1,4 @@
 export { SimulateCheckbox } from "./SimulateCheckbox";
-export { CountriesOfInterest } from "./CountriesOfInterest";
+export { CountriesOfInterestMultiSelect } from "./CountriesOfInterestMultiSelect";
+export { CountriesAreaRadio } from "./CountriesAreaRadio";
+export { AdminstrativeLevelRadio } from "./AdminstrativeLevelRadio";

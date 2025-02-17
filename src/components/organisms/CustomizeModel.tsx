@@ -1,8 +1,17 @@
 import { useTranslation } from "react-i18next";
-import { CountriesOfInterest, SimulateCheckbox } from "../molecules";
+import {
+  CountriesOfInterestMultiSelect,
+  SimulateCheckbox,
+  CountriesAreaRadio,
+  AdminstrativeLevelRadio,
+} from "../molecules";
+import { Button } from "../atoms/button";
+import { AdminstrativeAreaWizard } from "./AdminstrativeAreaDialog";
+import { useState } from "react";
 
 export function CustomizeModel() {
   const { t } = useTranslation();
+  const [dialogStatus, setDialogStatus] = useState<boolean>(false);
   return (
     <div className="bg-wpGray-100 rounded-2xl p-10 flex flex-col">
       <div className="flex flex-col sm:flex-row justify justify-between gap-10">
@@ -13,8 +22,13 @@ export function CustomizeModel() {
           <span className="font-inter text-base text-wpBlue">
             {t("customizeModel.subtitle")}
           </span>
-          <div className=" mt-8">
-            <CountriesOfInterest />
+          <div className=" mt-4 flex flex-col gap-8">
+            <div className="flex flex-col gap-2">
+              <CountriesOfInterestMultiSelect />
+              <CountriesAreaRadio />
+            </div>
+            <AdminstrativeLevelRadio />
+            <SimulateCheckbox />
           </div>
         </div>
         <div className="w-full sm:w-2/5 h-96 flex bg-wpBlue-100 justify-center align-middle rounded-2xl">
@@ -24,7 +38,16 @@ export function CustomizeModel() {
         </div>
       </div>
       <div className="border border-wpBlue-500 my-6"></div>
-      <SimulateCheckbox />
+      <Button
+        onClick={() => setDialogStatus((prev) => !prev)}
+        className="bg-wpBlue text-wpWhite hover:bg-wpBlue/80 rounded-[8px] font-inter font-bold text-xs w-64"
+      >
+        {t("customizeModel.nextStepButton")}
+      </Button>
+      <AdminstrativeAreaWizard
+        status={dialogStatus}
+        setStatus={setDialogStatus}
+      />
     </div>
   );
 }

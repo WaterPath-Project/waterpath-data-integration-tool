@@ -18,7 +18,7 @@ function transformToOption(countries: GADMCountries[]): Option[] {
   return countriesOption;
 }
 
-export function CountriesOfInterest() {
+export function CountriesOfInterestMultiSelect() {
   const { t } = useTranslation();
   const { countries } = useCountries();
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);

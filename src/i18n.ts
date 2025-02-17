@@ -23,7 +23,7 @@ i18n
       en: {
         translation: {
           header: {
-            title: "MODEL",
+            title: "Model",
             subtitle: "WATERPATH TOOLKIT",
           },
           glowpa: {
@@ -41,7 +41,20 @@ i18n
             emissions: "Human Emissions",
             risk: "Risk",
             countriesOfInterest: "Countries of Interest",
-            selectCountries: "Select countries!",
+            selectCountries: "Select countries...",
+            specificAreas: "Specific Areas",
+            entireCountries: "Entire Countries",
+            adminstrativeLevelsTitle: "Administrative Level",
+            adminstrativeLevelsSubtitle:
+              "Based on the combination of countries you have selected.",
+            adminstrativeLevels: {
+              level1: "Level 1",
+              level2: "Level 2",
+              level3: "Level 3",
+              level4: "Level 4",
+              level5: "Level 5",
+            },
+            nextStepButton: "Next step: Finetune sources",
           },
         },
       },
