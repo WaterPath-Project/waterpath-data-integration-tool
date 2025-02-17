@@ -1,19 +1,27 @@
 import { useTranslation } from "react-i18next";
 import { MultiSelect } from "../atoms/multiselect";
-import { Cat, Dog, Fish, Rabbit, Turtle } from "lucide-react";
 import { useState } from "react";
+import * as Flags from "country-flag-icons/react/3x2";
+import { useCountries } from "@/context/CountriesProvider";
+import { GADMCountries, Option } from "@/types";
 
-const frameworksList = [
-  { value: "react", label: "React", icon: Turtle },
-  { value: "angular", label: "Angular", icon: Cat },
-  { value: "vue", label: "Vue", icon: Dog },
-  { value: "svelte", label: "Svelte", icon: Rabbit },
-  { value: "ember", label: "Ember", icon: Fish },
-];
+function transformToOption(countries: GADMCountries[]): Option[] {
+  const countriesOption: Option[] = [];
+  for (const element of countries) {
+    const Flag = Flags[element.ALPHA_2 as keyof typeof Flags];
+    countriesOption.push({
+      value: element.ALPHA_2,
+      label: element.NAME_0,
+      icon: Flag,
+    });
+  }
+  return countriesOption;
+}
 
 export function CountriesOfInterest() {
   const { t } = useTranslation();
-  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
+  const { countries } = useCountries();
+  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -21,13 +29,13 @@ export function CountriesOfInterest() {
         {t("customizeModel.countriesOfInterest")}
       </span>
       <MultiSelect
-        options={frameworksList}
-        onValueChange={setSelectedFrameworks}
-        defaultValue={selectedFrameworks}
-        placeholder="Select frameworks"
+        options={countries ? transformToOption(countries) : []}
+        onValueChange={setSelectedCountries}
+        defaultValue={selectedCountries}
+        placeholder={t("customizeModel.selectCountries")}
         variant="inverted"
-        animation={2}
-        maxCount={3}
+        maxCount={5}
+        disabled={!countries}
       />
     </div>
   );

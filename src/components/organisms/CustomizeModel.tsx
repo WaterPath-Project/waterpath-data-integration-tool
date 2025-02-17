@@ -6,18 +6,18 @@ export function CustomizeModel() {
   return (
     <div className="bg-wpGray-100 rounded-2xl p-10 flex flex-col">
       <div className="flex flex-col sm:flex-row justify justify-between gap-10">
-        <div className="flex flex-col ">
+        <div className="flex flex-col sm:w-3/5  ">
           <span className="font-outfit font-extrabold text-[2rem] text-wpBlue">
             {t("customizeModel.title")}
           </span>
           <span className="font-inter text-base text-wpBlue">
             {t("customizeModel.subtitle")}
           </span>
-          <div className="mt-8">
+          <div className=" mt-8">
             <CountriesOfInterest />
           </div>
         </div>
-        <div className="w-full sm:w-96 h-96 flex bg-wpBlue-100 justify-center align-middle rounded-2xl">
+        <div className="w-full sm:w-2/5 h-96 flex bg-wpBlue-100 justify-center align-middle rounded-2xl">
           <span className="place-self-center font-inter font-bold text-xs text-wpBlue">
             MAP
           </span>

@@ -14,3 +14,13 @@ export type GADMCountries = {
   MAX_LEVEL: number;
   ADMIN_LABELS: string[];
 };
+
+/*
+ * Component
+ */
+
+export type Option = {
+  label: string;
+  value: string;
+  icon?: React.ComponentType<{ className?: string }>;
+};
