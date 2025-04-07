@@ -18,7 +18,6 @@ export const CountriesProvider = ({ children }: { children: ReactNode }) => {
     const result = await api.get(
       "https://raw.githubusercontent.com/WaterPath-Project/waterpath-data/refs/heads/main/world_admin_overview/data/countries.json"
     );
-    console.log(result.data);
     return result.data;
   };
 

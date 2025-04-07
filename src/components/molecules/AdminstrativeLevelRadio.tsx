@@ -1,14 +1,12 @@
 import { RadioGroup, RadioGroupItem } from "@/components/atoms/radio-group";
 import { cn } from "@/lib/utils";
+import { useDITStore } from "@/store/DITStore";
 import { AdminstrativeLevelEnum } from "@/types";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export function AdminstrativeLevelRadio() {
   const { t } = useTranslation();
-  const [selectedOption, setSelectedOption] = useState<AdminstrativeLevelEnum>(
-    AdminstrativeLevelEnum.Level1
-  );
+  const { adminLevel, setAdminLevel } = useDITStore();
 
   const options = [
     {
@@ -49,7 +47,7 @@ export function AdminstrativeLevelRadio() {
         </span>
       </div>
       <RadioGroup
-        value={selectedOption}
+        value={adminLevel}
         className="w-full flex flex-row gap-2 flex-wrap"
       >
         {options.map((option) => (
@@ -58,11 +56,10 @@ export function AdminstrativeLevelRadio() {
             className={cn(
               "flex items-center gap-2  p-2 text-xs font-bold font-inter text-wpBlue border border-wpBlue-100 rounded-[8px]",
               {
-                "bg-wpGreen border border-wpGreen":
-                  selectedOption === option.value,
+                "bg-wpGreen border border-wpGreen": adminLevel === option.value,
               }
             )}
-            onClick={() => setSelectedOption(option.value)}
+            onClick={() => setAdminLevel(option.value)}
           >
             <RadioGroupItem value={option.value} id={option.id} />
             <label htmlFor={option.id}>{option.label}</label>

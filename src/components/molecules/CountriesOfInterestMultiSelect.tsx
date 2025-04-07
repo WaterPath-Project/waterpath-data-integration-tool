@@ -1,9 +1,10 @@
 import { useTranslation } from "react-i18next";
 import { MultiSelect } from "../atoms/multiselect";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as Flags from "country-flag-icons/react/3x2";
 import { useCountries } from "@/context/CountriesProvider";
 import { GADMCountries, Option } from "@/types";
+import { useDITStore } from "@/store/DITStore";
 
 function transformToOption(countries: GADMCountries[]): Option[] {
   const countriesOption: Option[] = [];
@@ -22,6 +23,15 @@ export function CountriesOfInterestMultiSelect() {
   const { t } = useTranslation();
   const { countries } = useCountries();
   const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (countries) {
+      const stateCountries: GADMCountries[] = countries.filter((c) =>
+        selectedCountries.includes(c.ALPHA_2)
+      );
+      useDITStore.setState({ countries: stateCountries });
+    }
+  }, [countries, selectedCountries]);
 
   return (
     <div className="flex flex-col gap-2">

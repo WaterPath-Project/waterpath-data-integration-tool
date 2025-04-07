@@ -8,10 +8,14 @@ import {
 import { Button } from "../atoms/button";
 import { AdminstrativeAreaWizard } from "./AdminstrativeAreaDialog";
 import { useState } from "react";
+import { useDITStore } from "@/store/DITStore";
+import { AreaOptionEnum } from "@/types";
 
 export function CustomizeModel() {
   const { t } = useTranslation();
   const [dialogStatus, setDialogStatus] = useState<boolean>(false);
+  const { countries, area } = useDITStore();
+
   return (
     <div className="bg-wpGray-100 rounded-2xl p-10 flex flex-col">
       <div className="flex flex-col sm:flex-row justify justify-between gap-10">
@@ -39,7 +43,11 @@ export function CustomizeModel() {
       </div>
       <div className="border border-wpBlue-500 my-6"></div>
       <Button
-        onClick={() => setDialogStatus((prev) => !prev)}
+        disabled={countries.length === 0}
+        onClick={() =>
+          area === AreaOptionEnum.SpecificAreas &&
+          setDialogStatus((prev) => !prev)
+        }
         className="bg-wpBlue text-wpWhite hover:bg-wpBlue/80 rounded-[8px] font-inter font-bold text-xs w-64"
       >
         {t("customizeModel.nextStepButton")}
