@@ -6,7 +6,11 @@ import { useTranslation } from "react-i18next";
 
 export function AdminstrativeLevelRadio() {
   const { t } = useTranslation();
-  const { adminLevel, setAdminLevel } = useDITStore();
+  const { adminLevel, countries, setAdminLevel } = useDITStore();
+
+  const smallestLevel = countries.reduce((min, country) => {
+    return Math.min(min, country.ADMIN_LABELS.length);
+  }, 5);
 
   const options = [
     {
@@ -50,11 +54,12 @@ export function AdminstrativeLevelRadio() {
         value={adminLevel}
         className="w-full flex flex-row gap-2 flex-wrap"
       >
-        {options.map((option) => (
+        {options.map((option, index) => (
           <button
             key={option.value}
+            disabled={index > smallestLevel}
             className={cn(
-              "flex items-center gap-2  p-2 text-xs font-bold font-inter text-wpBlue border border-wpBlue-100 rounded-[8px]",
+              "flex items-center gap-2  p-2 text-xs font-bold font-inter text-wpBlue border border-wpBlue-100 rounded-[8px] disabled:opacity-50",
               {
                 "bg-wpGreen border border-wpGreen": adminLevel === option.value,
               }

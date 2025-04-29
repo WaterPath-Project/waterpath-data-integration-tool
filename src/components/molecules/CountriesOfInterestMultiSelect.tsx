@@ -35,9 +35,11 @@ export function CountriesOfInterestMultiSelect() {
 
   return (
     <div className="flex flex-col gap-2">
-      <span className="inter text-sm font-semibold text-wpBlue">
-        {t("customizeModel.countriesOfInterest")}
-      </span>
+      <div className="flex flex-row justify-between">
+        <span className="inter text-sm font-semibold text-wpBlue">
+          {t("customizeModel.countriesOfInterest")}
+        </span>
+      </div>
       <MultiSelect
         options={countries ? transformToOption(countries) : []}
         onValueChange={setSelectedCountries}

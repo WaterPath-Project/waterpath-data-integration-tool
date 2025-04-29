@@ -10,6 +10,7 @@ import { AdminstrativeAreaWizard } from "./AdminstrativeAreaDialog";
 import { useState } from "react";
 import { useDITStore } from "@/store/DITStore";
 import { AreaOptionEnum } from "@/types";
+import { Transition } from "@headlessui/react";
 
 export function CustomizeModel() {
   const { t } = useTranslation();
@@ -27,12 +28,22 @@ export function CustomizeModel() {
             {t("customizeModel.subtitle")}
           </span>
           <div className=" mt-4 flex flex-col gap-8">
+            <SimulateCheckbox />
             <div className="flex flex-col gap-2">
               <CountriesOfInterestMultiSelect />
               <CountriesAreaRadio />
             </div>
-            <AdminstrativeLevelRadio />
-            <SimulateCheckbox />
+            <div className="h-20">
+              <Transition
+                show={
+                  countries.length > 0 && area === AreaOptionEnum.SpecificAreas
+                }
+              >
+                <div className="transition duration-200 ease-in data-[closed]:opacity-0">
+                  <AdminstrativeLevelRadio />
+                </div>
+              </Transition>
+            </div>
           </div>
         </div>
         <div className="w-full sm:w-2/5 h-96 flex bg-wpBlue-100 justify-center align-middle rounded-2xl">
