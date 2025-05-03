@@ -1,6 +1,7 @@
 import { Home } from "./components/pages";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CountriesProvider } from "./context/CountriesProvider";
+import { SessionProvider } from "./context/SessionProvider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -13,9 +14,11 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <CountriesProvider>
-        <Home />
-      </CountriesProvider>
+      <SessionProvider>
+        <CountriesProvider>
+          <Home />
+        </CountriesProvider>
+      </SessionProvider>
     </QueryClientProvider>
   );
 }

@@ -2,6 +2,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/atoms/radio-group";
 import { cn } from "@/lib/utils";
 import { useDITStore } from "@/store/DITStore";
 import { AdminstrativeLevelEnum } from "@/types";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 export function AdminstrativeLevelRadio() {
@@ -11,6 +12,12 @@ export function AdminstrativeLevelRadio() {
   const smallestLevel = countries.reduce((min, country) => {
     return Math.min(min, country.ADMIN_LABELS.length);
   }, 5);
+
+  useEffect(() => {
+    if (countries.length>0) {
+      setAdminLevel(AdminstrativeLevelEnum.Level1);
+    }
+  },[smallestLevel])
 
   const options = [
     {
