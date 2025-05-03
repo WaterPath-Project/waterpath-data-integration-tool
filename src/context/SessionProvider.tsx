@@ -23,7 +23,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
 
 
     const createSession = async () => {
-        const result = await api.get(
+        const result = await api.post(
             `https://dev.waterpath.venthic.com/api/session/create/?session_id=${sessionId}`
         );
         return result.data;
