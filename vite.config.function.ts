@@ -10,9 +10,6 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  define: {
-    "process.env": process.env,
-  },
   build: {
     minify: true,
     lib: {
