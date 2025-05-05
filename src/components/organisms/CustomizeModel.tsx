@@ -6,20 +6,58 @@ import {
   AdminstrativeLevelRadio,
 } from "../molecules";
 import { Button } from "../atoms/button";
-import { AdminstrativeAreaWizard } from "./AdminstrativeAreaDialog";
-import { useState } from "react";
 import { useDITStore } from "@/store/DITStore";
 import { AreaOptionEnum } from "@/types";
 import { Transition } from "@headlessui/react";
+import api from "@/api";
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "@/context/SessionProvider";
+import classNames from "classnames";
+import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 export function CustomizeModel() {
   const { t } = useTranslation();
-  const [dialogStatus, setDialogStatus] = useState<boolean>(false);
+  const { sessionId } = useSession();
   const { countries, area } = useDITStore();
+  const navigate = useNavigate()
+
+  const generateData = async () => {
+    const result = await api.post(
+      `https://dev.waterpath.venthic.com//api/data/input/generate?session_id=${sessionId}&gids=${countries.map(country => country.GID_0).join(",")}`,
+    );
+    return result.data;
+  };
+
+  const { isFetching, refetch } = useQuery({
+    queryKey: ["generateData"],
+    queryFn: generateData,
+    enabled: false,
+  });
+
+
+  const handleClick = async () => {
+    if (area === AreaOptionEnum.SpecificAreas) {
+      navigate("/areas")
+    }
+    else {
+      const result = await refetch();
+      if (result.isError) {
+        toast.error(t("customizeModel.errorMessage"));
+      } else {
+        toast.success(t("customizeModel.successMessage"));
+        navigate("/success")
+      }
+    }
+  }
+
 
   return (
-    <div className="bg-wpGray-100 rounded-2xl p-10 flex flex-col">
-      <div className="flex flex-col sm:flex-row justify justify-between gap-10">
+    <div className={classNames("bg-wpGray-100 rounded-2xl p-10 flex flex-col", {
+      "opacity-50 pointer-events-none": isFetching,
+      "opacity-100 pointer-events-auto": !isFetching,
+    })}>
+      <div className="flex flex-col sm:flex-row justify justify-between gap-10 mb-10">
         <div className="flex flex-col sm:w-3/5  ">
           <span className="font-outfit font-extrabold text-[2rem] text-wpBlue">
             {t("customizeModel.title")}
@@ -33,7 +71,7 @@ export function CustomizeModel() {
               <CountriesOfInterestMultiSelect />
               <CountriesAreaRadio />
             </div>
-            <div className="h-20">
+            <div className="h-30">
               <Transition
                 show={
                   countries.length > 0 && area === AreaOptionEnum.SpecificAreas
@@ -52,21 +90,14 @@ export function CustomizeModel() {
           </span>
         </div>
       </div>
-      <div className="border border-wpBlue-500 my-6"></div>
+      <div className="border border-wpBlue-500 mb-6"></div>
       <Button
-        disabled={countries.length === 0}
-        onClick={() =>
-          area === AreaOptionEnum.SpecificAreas &&
-          setDialogStatus((prev) => !prev)
-        }
+        disabled={countries.length === 0 || isFetching}
+        onClick={handleClick}
         className="bg-wpBlue text-wpWhite hover:bg-wpBlue/80 rounded-[8px] font-inter font-bold text-xs w-64"
       >
-        {t("customizeModel.nextStepButton")}
+        {area === AreaOptionEnum.SpecificAreas ? t("customizeModel.nextStepAreasButton") : t("customizeModel.nextStepCountriesButton")}
       </Button>
-      <AdminstrativeAreaWizard
-        status={dialogStatus}
-        setStatus={setDialogStatus}
-      />
-    </div>
+    </div >
   );
 }

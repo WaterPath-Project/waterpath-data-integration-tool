@@ -10,7 +10,7 @@ import { HeaderLogo } from "./HeaderLogo";
 export function Header() {
   const { t } = useTranslation();
   return (
-    <div className="flex flex-col-reverse items-start md:flex-row md:justify-between md:items-end mb-16">
+    <div className="flex flex-col-reverse items-start md:flex-row md:justify-between md:items-end mb-16 mx-4 ">
       <div className="flex flex-col">
         <span className="font-outfit text-wpGreen-900 font-extrabold text-xl">
           {t("header.subtitle")}

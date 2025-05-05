@@ -7,6 +7,9 @@ import {
 } from "@/components/atoms/dialog";
 import { Dispatch, SetStateAction } from "react";
 
+/*
+* TO DELETE AS IT IS NOT USED
+*/
 export function AdminstrativeAreaWizard({
   status,
   setStatus,

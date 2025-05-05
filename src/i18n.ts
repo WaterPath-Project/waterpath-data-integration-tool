@@ -54,7 +54,11 @@ i18n
               level4: "Level 4",
               level5: "Level 5",
             },
-            nextStepButton: "Next step: Finetune sources",
+            nextStepCountriesButton: "Next step: Finetune sources",
+            nextStepAreasButton: "Next step: Select specific areas",
+            errorMessage: "Oups! Something went wrong. Please try again.",
+            successMessage:
+              "Success! The data has been generated. You can now finetune the sources.",
           },
         },
       },
