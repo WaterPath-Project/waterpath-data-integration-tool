@@ -16,6 +16,27 @@ export type GADMCountries = {
 };
 
 /*
+* API Responses
+*/
+
+//Get areas by country
+export type GADMAreas = {
+  GID_0: string;
+  GID_1: string;
+  GID_2: string;
+  GID_3: string;
+  GID_4: string;
+  GID_5: string;
+  NAME_0: string;
+  NAME_1: string;
+  NAME_2: string,
+  NAME_3: string;
+  NAME_4: string;
+  NAME_5: string;
+}
+
+
+/*
  * Component
  */
 export type Option = {
@@ -34,5 +55,5 @@ export enum AdminstrativeLevelEnum {
   Level2 = "Level2",
   Level3 = "Level3",
   Level4 = "Level4",
-  Level5 = "Level25",
+  Level5 = "Level5",
 }

@@ -1,4 +1,4 @@
-import { AdminstrativeLevelEnum, AreaOptionEnum, GADMCountries } from "@/types";
+import { AdminstrativeLevelEnum, AreaOptionEnum, GADMAreas, GADMCountries } from "@/types";
 import { create } from "zustand";
 
 type DITState = {
@@ -17,6 +17,11 @@ type DITState = {
   setHasConcentrations: (hasConcentrations: boolean) => void;
   hasRisks: boolean;
   setHasRisks: (hasRisks: boolean) => void;
+  downLoadedAreas: GADMAreas[];
+  addDownLoadedAreas: (country: GADMAreas[]) => void;
+  selectedAreas: string[];
+  addSelectedAreas: (area: string) => void;
+  removeSelectedAreas: (area: string) => void;
   reset: () => void;
 };
 
@@ -50,6 +55,20 @@ export const useDITStore = create<DITState>((set) => ({
     set({ hasConcentrations: newHasConcentrations }),
   hasRisks: false,
   setHasRisks: (newHasRisks: boolean) => set({ hasRisks: newHasRisks }),
+  //State Management of GADM areas
+  downLoadedAreas: [],
+  addDownLoadedAreas: (newAreas: GADMAreas[]) =>
+    set((state) => ({
+      downLoadedAreas: [...state.downLoadedAreas, ...newAreas],
+    })),
+  selectedAreas: [],
+  addSelectedAreas: (area: string) => set((state) => ({ selectedAreas: [...state.selectedAreas, area] })),
+  removeSelectedAreas: (area: string) =>
+    set((state) => ({
+      selectedAreas: state.selectedAreas.filter((a) => a !== area),
+    })),
   //Reset state
   reset: () => set({ countries: [] }),
+
+
 }));

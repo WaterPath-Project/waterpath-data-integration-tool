@@ -19,7 +19,7 @@ export function Header() {
           {t("header.title")}
         </span>
       </div>
-      <div>
+      <div className="hidden md:flex">
         <HeaderLogo />
       </div>
     </div>

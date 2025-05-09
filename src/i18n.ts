@@ -60,6 +60,12 @@ i18n
             successMessage:
               "Success! The data has been generated. You can now finetune the sources.",
           },
+          areaSelector: {
+            addButton: "Add new area",
+            title: "Select specific areas",
+            selectedAreasTitle: "Selected areas",
+            noSelectedAreas: "No areas selected!",
+          }
         },
       },
     },

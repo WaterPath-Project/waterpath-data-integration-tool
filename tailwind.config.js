@@ -19,6 +19,7 @@ module.exports = {
         },
         wpBlue: {
           DEFAULT: "#0B4159",
+          900: "#0D2834",
           500: "#B7D7EF",
           200: "#71AFCA",
           100: "#CAD8E3",
