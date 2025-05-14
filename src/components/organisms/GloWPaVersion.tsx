@@ -1,17 +1,13 @@
 import { useTranslation } from "react-i18next";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../atoms";
-import { useState } from "react";
+import { Button } from "../atoms/button";
+import { DownloadIcon } from "lucide-react";
 
 export function GloWPaVersion() {
   const { t } = useTranslation();
-  const [value, setValue] = useState<string>("Version 1.0");
+
+  const handleClick = () => {
+    window.open("https://git.wur.nl/glowpa/glowpa-r/-/archive/main/glowpa-r-main.zip", "_blank");
+  }
 
   return (
     <div className="bg-wpBrown rounded-2xl w-full">
@@ -24,16 +20,13 @@ export function GloWPaVersion() {
             {t("glowpa.subtitle")}
           </span>
         </div>
-        <Select value={value} onValueChange={setValue}>
-          <SelectTrigger className="max-w-[346px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem value="Version 1.0">Version 1.0</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <Button
+          onClick={handleClick}
+          variant={"primary"}
+          className="rounded-[8px] font-inter font-bold text-xs w-64 flex  gap-2 items-center"
+        >
+          <DownloadIcon />{t("glowpa.button")}
+        </Button>
       </div>
     </div>
   );

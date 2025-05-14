@@ -26,10 +26,20 @@ i18n
             title: "Model",
             subtitle: "WATERPATH TOOLKIT",
           },
+          breadcrumb: {
+            "home": "Home",
+            "areas": "Areas",
+            "finetune": "Finetune",
+          },
           glowpa: {
             title: "GloWPa version",
             subtitle:
               "Borem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a.",
+            button: "Download GloWPa version",
+          },
+          loader: {
+            generateCountriesData: "Generate countries data...",
+            loadingAllTheAreas: "Loading all the areas",
           },
           customizeModel: {
             title: "Customize Model",

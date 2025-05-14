@@ -17,7 +17,8 @@ export function AreaSelector() {
             Test
         </Card>
         <Button
-            className="w- bg-wpGreen text-white hover:bg-wpGreen/90 rounded-[10px] flex items-center gap-2 font-inter font-bold text-xs w-64"
+            variant={"primary"}
+            className="rounded-[8px] flex items-center gap-2 font-inter font-semibold text-xs w-64 text-wpWhite"
             onClick={() => {
                 setSelectedArea(null);
             }}><PlusCircleIcon />{t("areaSelector.addButton")}</Button>
@@ -37,7 +38,8 @@ export function AreaSelector() {
             )
         }
         <Button
-            className="bg-wpBlue text-wpWhite hover:bg-wpBlue/80 rounded-[8px] font-inter font-bold text-xs w-64"
+            variant={"secondary"}
+            className=" rounded-[8px] font-inter font-bold text-xs w-64"
         >
             {t("customizeModel.nextStepCountriesButton")}
         </Button>

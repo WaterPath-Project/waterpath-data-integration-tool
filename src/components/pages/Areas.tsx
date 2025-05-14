@@ -8,14 +8,17 @@ import api from "@/api";
 import { useEffect } from "react";
 import { GADMAreas } from "@/types";
 import { Loader } from "../atoms/Loader";
+import { useTranslation, } from "react-i18next";
+import { t } from "i18next";
 
 const breadcrumbItems = [
-    { name: "Home", url: "/" },
-    { name: "Areas" },
+    { name: t("breadcrumb.home"), url: "/" },
+    { name: t("breadcrumb.areas") },
 ];
 
 export function Areas() {
     const { countries, adminLevel, addDownLoadedAreas } = useDITStore();
+    const { t } = useTranslation();
 
     const fetchAreasByCountry = async (countryId: string, adminLevel: number) => {
         const result = await api.get(
@@ -52,7 +55,7 @@ export function Areas() {
     return (
         <div className="relative h-full min-h-screen">
             {isFetching && (
-                <Loader message={"Loading all the areas"} />
+                <Loader message={t("loader.loadingAllTheAreas")} />
             )}
             <BasicLayout>
                 <div className="mx-4">
