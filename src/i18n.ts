@@ -39,6 +39,7 @@ i18n
           },
           loader: {
             generateCountriesData: "Generate countries data...",
+            generateAreasData: "Generate areas data...",
             loadingAllTheAreas: "Loading all the areas",
           },
           customizeModel: {
@@ -75,6 +76,8 @@ i18n
             title: "Select specific areas",
             selectedAreasTitle: "Selected areas",
             noSelectedAreas: "No areas selected!",
+            alreadyExists: "Area already added",
+            alreadyExistsDescription: "You've already selected this area."
           }
         },
       },

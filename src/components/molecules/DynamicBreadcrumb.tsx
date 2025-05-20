@@ -31,7 +31,7 @@ const DynamicBreadcrumb: React.FC<DynamicBreadcrumbProps> = ({ items }) => {
                                 {isLast || !item.url ? (
                                     <BreadcrumbPage className="text-wpBlue font-bold text-sm">{item.name}</BreadcrumbPage>
                                 ) : (
-                                    <BreadcrumbLink className="text-wpBlue font-bold text-sm" onClick={() => navigate(item?.url ?? "/")}>{item.name}</BreadcrumbLink>
+                                    <BreadcrumbLink className="text-wpBlue font-bold text-sm hover:cursor-pointer" onClick={() => navigate(item?.url ?? "/")}>{item.name}</BreadcrumbLink>
                                 )}
                             </BreadcrumbItem>
                             {!isLast && <BreadcrumbSeparator className="text-wpBlue font-bold text-xl" />}

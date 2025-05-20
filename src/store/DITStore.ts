@@ -68,7 +68,16 @@ export const useDITStore = create<DITState>((set) => ({
       selectedAreas: state.selectedAreas.filter((a) => a !== area),
     })),
   //Reset state
-  reset: () => set({ countries: [] }),
-
-
+  reset: () =>
+    set({
+      countries: [],
+      area: AreaOptionEnum.EntireCountries,
+      adminLevel: AdminstrativeLevelEnum.Level1,
+      hasHumanEmissions: false,
+      hasLivestockEmissions: false,
+      hasConcentrations: false,
+      hasRisks: false,
+      downLoadedAreas: [],
+      selectedAreas: [],
+    }),
 }));

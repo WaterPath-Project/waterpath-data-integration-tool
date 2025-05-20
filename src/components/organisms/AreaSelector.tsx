@@ -10,14 +10,18 @@ import { levelEnumToNumber } from "@/tools/utils";
 import api from "@/api";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "@/context/SessionProvider";
+import { SelectedAreaList } from "../molecules/SelectedAreaList";
+import { toast } from "sonner";
+import { useNavigate } from "react-router";
+import { Loader } from "../atoms/Loader";
 
 export function AreaSelector() {
     const { t } = useTranslation();
     const { sessionId } = useSession();
-    const { downLoadedAreas, adminLevel, selectedAreas, addSelectedArea } = useDITStore();
+    const { downLoadedAreas, adminLevel, selectedAreas, addSelectedArea, reset } = useDITStore();
     const [finalSelection, setFinalSelection] = useState<string>('');
     const dropdownRef = useRef<DynamicDropdownsRef>(null);
-
+    const navigate = useNavigate()
 
     const generateData = async () => {
         const result = await api.post(
@@ -26,7 +30,7 @@ export function AreaSelector() {
         return result.data;
     };
 
-    const { isFetching, /*refetch*/ } = useQuery({
+    const { isFetching, refetch } = useQuery({
         queryKey: ["generateData"],
         queryFn: generateData,
         enabled: false,
@@ -36,50 +40,63 @@ export function AreaSelector() {
         setFinalSelection(value);
     };
 
-    const handleSubmit = () => {
+    const handleAddNewArea = () => {
         const selection = finalSelection;
+
+        // Check for duplicate
+        if (selectedAreas.includes(selection)) {
+            toast.warning(t("areaSelector.alreadyExists"), {
+                description: t("areaSelector.alreadyExistsDescription"),
+            });
+            return;
+        }
+
         addSelectedArea(selection);
         dropdownRef.current?.reset();
         setFinalSelection('');
     };
 
-    if (isFetching) {
-        return (<>Hello world</>)
+    const handleSubmit = async () => {
+        const result = await refetch();
+        if (result.isError) {
+            toast.error(t("customizeModel.errorMessage"));
+        } else {
+            toast.success(t("customizeModel.successMessage"));
+            reset();
+            navigate("/success")
+        }
     }
 
-    return (<div className={classNames("bg-wpGray-100 rounded-2xl p-10 flex flex-col gap-4 ")}>
-        <span className="font-outfit font-extrabold text-[2rem] text-wpBlue">
-            {t("areaSelector.title")}
-        </span>
-        <Card className="flex flex-row gap-4 items-center justify-between bg-white p-4 rounded-[8px]">
-            <DynamicDropdowns ref={dropdownRef} areas={downLoadedAreas} maxLevel={levelEnumToNumber(adminLevel) + 1} onFinalSelect={handleFinalSelect} />
-        </Card>
-        <Button
-            variant={"primary"}
-            onClick={handleSubmit}
-            disabled={!finalSelection}
-            className="rounded-[8px] flex items-center gap-2 font-inter font-semibold text-xs w-64 text-wpWhite"
-        ><PlusCircleIcon />{t("areaSelector.addButton")}</Button>
-        <div className="border border-wpBlue-500"></div>
-        <span className="font-outfit font-extrabold text-[2rem] text-wpBlue">
-            {t("areaSelector.selectedAreasTitle")}
-        </span>
-        {
-            selectedAreas.length > 0 ? (
-                <Card className="min-h-40 flex flex-row gap-4 items-center justify-between bg-white p-4 rounded-[8px]">
-                    {selectedAreas.join(", ")}
-                </Card>
-            ) : (
-                <span className="font-inter font-semibold text-2xl text-wpBlue text-center min-h-40">
-                    {t("areaSelector.noSelectedAreas")}
+    return (
+        <>
+            {isFetching && (
+                <Loader message={t("loader.generateAreasData")} />
+            )}
+            <div className={classNames("bg-wpGray-100 rounded-2xl p-10 flex flex-col gap-4 ")}>
+                <span className="font-outfit font-extrabold text-[2rem] text-wpBlue">
+                    {t("areaSelector.title")}
                 </span>
-            )
-        }
-        <Button
-            variant={"secondary"}
-            className=" rounded-[8px] font-inter font-bold text-xs w-64"
-        >
-            {t("customizeModel.nextStepCountriesButton")}
-        </Button>
-    </div>)
+                <Card className="flex flex-row gap-4 items-center justify-between bg-white p-4 rounded-[8px]">
+                    <DynamicDropdowns ref={dropdownRef} areas={downLoadedAreas} maxLevel={levelEnumToNumber(adminLevel) + 1} onFinalSelect={handleFinalSelect} />
+                </Card>
+                <Button
+                    variant={"primary"}
+                    onClick={handleAddNewArea}
+                    disabled={!finalSelection}
+                    className="rounded-[8px] flex items-center gap-2 font-inter font-semibold text-xs w-64 text-wpWhite"
+                ><PlusCircleIcon />{t("areaSelector.addButton")}</Button>
+                <div className="border border-wpBlue-500"></div>
+                <span className="font-outfit font-extrabold text-[2rem] text-wpBlue">
+                    {t("areaSelector.selectedAreasTitle")}
+                </span>
+                <SelectedAreaList level={levelEnumToNumber(adminLevel)} />
+                <Button
+                    onClick={handleSubmit}
+                    variant={"secondary"}
+                    className=" rounded-[8px] font-inter font-bold text-xs w-64"
+                >
+                    {t("customizeModel.nextStepCountriesButton")}
+                </Button>
+            </div>
+        </>)
 }

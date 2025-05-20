@@ -20,7 +20,7 @@ import { Loader } from "../atoms/Loader";
 export function CustomizeModel() {
   const { t } = useTranslation();
   const { sessionId } = useSession();
-  const { countries, area } = useDITStore();
+  const { countries, area, reset } = useDITStore();
   const navigate = useNavigate()
 
   const generateData = async () => {
@@ -47,6 +47,7 @@ export function CustomizeModel() {
         toast.error(t("customizeModel.errorMessage"));
       } else {
         toast.success(t("customizeModel.successMessage"));
+        reset();
         navigate("/success")
       }
     }

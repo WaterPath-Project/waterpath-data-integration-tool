@@ -36,7 +36,6 @@ export const DynamicDropdowns = forwardRef<DynamicDropdownsRef, Props>(
 
         useImperativeHandle(ref, () => ({
             reset: () => {
-                console.log('Resetting selected GIDs');
                 setSelectedGIDs([]);
                 onFinalSelect?.('');
             },

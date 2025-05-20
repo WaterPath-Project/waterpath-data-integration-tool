@@ -24,7 +24,6 @@ export function Areas() {
         const result = await api.get(
             `https://dev.waterpath.venthic.com/api/geodata/get-areas?country_code=${countryId}&level=${adminLevel}`,
         );
-        console.log(result.data);
         return result.data;
     };
 
