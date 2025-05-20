@@ -7,6 +7,7 @@ import {
     BreadcrumbSeparator,
     BreadcrumbPage,
 } from "@/components/atoms/breadcrumb";
+import { useNavigate } from "react-router";
 
 type Crumb = {
     name: string;
@@ -18,6 +19,7 @@ type DynamicBreadcrumbProps = {
 }
 
 const DynamicBreadcrumb: React.FC<DynamicBreadcrumbProps> = ({ items }) => {
+    const navigate = useNavigate();
     return (
         <Breadcrumb>
             <BreadcrumbList>
@@ -29,7 +31,7 @@ const DynamicBreadcrumb: React.FC<DynamicBreadcrumbProps> = ({ items }) => {
                                 {isLast || !item.url ? (
                                     <BreadcrumbPage className="text-wpBlue font-bold text-sm">{item.name}</BreadcrumbPage>
                                 ) : (
-                                    <BreadcrumbLink className="text-wpBlue font-bold text-sm" href={item.url}>{item.name}</BreadcrumbLink>
+                                    <BreadcrumbLink className="text-wpBlue font-bold text-sm" onClick={() => navigate(item?.url ?? "/")}>{item.name}</BreadcrumbLink>
                                 )}
                             </BreadcrumbItem>
                             {!isLast && <BreadcrumbSeparator className="text-wpBlue font-bold text-xl" />}

@@ -22,7 +22,9 @@ function transformToOption(countries: GADMCountries[]): Option[] {
 export function CountriesOfInterestMultiSelect() {
   const { t } = useTranslation();
   const { countries } = useCountries();
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const { countries: contextCountries } = useDITStore();
+  const [selectedCountries, setSelectedCountries] = useState<string[]>(contextCountries.map((c) => c.ALPHA_2));
+
 
   useEffect(() => {
     if (countries) {
@@ -31,7 +33,7 @@ export function CountriesOfInterestMultiSelect() {
       );
       useDITStore.setState({ countries: stateCountries });
     }
-  }, [countries, selectedCountries]);
+  }, [selectedCountries]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -43,7 +45,7 @@ export function CountriesOfInterestMultiSelect() {
       <MultiSelect
         options={countries ? transformToOption(countries) : []}
         onValueChange={setSelectedCountries}
-        defaultValue={selectedCountries}
+        defaultValue={contextCountries.map((c) => c.ALPHA_2)}
         placeholder={t("customizeModel.selectCountries")}
         variant="inverted"
         maxCount={5}

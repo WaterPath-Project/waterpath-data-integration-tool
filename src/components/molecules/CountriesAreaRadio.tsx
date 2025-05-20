@@ -22,7 +22,7 @@ export function CountriesAreaRadio() {
   ];
 
   return (
-    <RadioGroup value={area} className="w-full flex flex-row gap-2">
+    <RadioGroup defaultValue={area} className="w-full flex flex-row gap-2">
       {options.map((option) => (
         <button
           key={option.value}

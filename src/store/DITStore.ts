@@ -20,8 +20,8 @@ type DITState = {
   downLoadedAreas: GADMAreas[];
   addDownLoadedAreas: (country: GADMAreas[]) => void;
   selectedAreas: string[];
-  addSelectedAreas: (area: string) => void;
-  removeSelectedAreas: (area: string) => void;
+  addSelectedArea: (area: string) => void;
+  removeSelectedArea: (area: string) => void;
   reset: () => void;
 };
 
@@ -62,8 +62,8 @@ export const useDITStore = create<DITState>((set) => ({
       downLoadedAreas: [...state.downLoadedAreas, ...newAreas],
     })),
   selectedAreas: [],
-  addSelectedAreas: (area: string) => set((state) => ({ selectedAreas: [...state.selectedAreas, area] })),
-  removeSelectedAreas: (area: string) =>
+  addSelectedArea: (area: string) => set((state) => ({ selectedAreas: [...state.selectedAreas, area] })),
+  removeSelectedArea: (area: string) =>
     set((state) => ({
       selectedAreas: state.selectedAreas.filter((a) => a !== area),
     })),

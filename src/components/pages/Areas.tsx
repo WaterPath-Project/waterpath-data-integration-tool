@@ -9,16 +9,16 @@ import { useEffect } from "react";
 import { GADMAreas } from "@/types";
 import { Loader } from "../atoms/Loader";
 import { useTranslation, } from "react-i18next";
-import { t } from "i18next";
 
-const breadcrumbItems = [
-    { name: t("breadcrumb.home"), url: "/" },
-    { name: t("breadcrumb.areas") },
-];
 
 export function Areas() {
     const { countries, adminLevel, addDownLoadedAreas } = useDITStore();
     const { t } = useTranslation();
+
+    const breadcrumbItems = [
+        { name: t("breadcrumb.home"), url: "/" },
+        { name: t("breadcrumb.areas") },
+    ];
 
     const fetchAreasByCountry = async (countryId: string, adminLevel: number) => {
         const result = await api.get(
@@ -38,7 +38,6 @@ export function Areas() {
     })
 
     const isFetching = areasByCountryQueries.some(query => query.isFetching);
-    //const isError = areasByCountryQueries.some(query => query.isError);
 
     const allFetched = areasByCountryQueries.every(q => q.isSuccess);
 
