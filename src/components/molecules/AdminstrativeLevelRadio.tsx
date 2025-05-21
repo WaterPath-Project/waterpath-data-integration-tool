@@ -1,13 +1,14 @@
 import { RadioGroup, RadioGroupItem } from "@/components/atoms/radio-group";
 import { cn } from "@/lib/utils";
 import { useDITStore } from "@/store/DITStore";
-import { AdminstrativeLevelEnum } from "@/types";
+import { levelEnumToNumber } from "@/tools/utils";
+import { AdminstrativeLevelEnum, AreaOptionEnum } from "@/types";
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 export function AdminstrativeLevelRadio() {
   const { t } = useTranslation();
-  const { adminLevel, countries, setAdminLevel } = useDITStore();
+  const { adminLevel, countries, setAdminLevel, setArea } = useDITStore();
 
   // Memoize minLevel
   const minLevel = useMemo(() => {
@@ -23,15 +24,15 @@ export function AdminstrativeLevelRadio() {
     const splitLabel = (label: string) => {
       // Split by pipe or slash
       const parts = label.split(/[|/]/).slice(0, 2);
-      return parts.map(part =>
-        part.replace(/([a-z])([A-Z])/g, '$1 $2').trim()
-      ).join('/');
+      return parts
+        .map((part) => part.replace(/([a-z])([A-Z])/g, "$1 $2").trim())
+        .join("/");
     };
 
     for (let i = 0; i < minLevel; i++) {
       const rawLabels = countries
-        .map(c => c.ADMIN_LABELS[i])
-        .filter(label => label && label !== "NA");
+        .map((c) => c.ADMIN_LABELS[i])
+        .filter((label) => label && label !== "NA");
 
       const formattedLabels = rawLabels.map(splitLabel);
 
@@ -39,7 +40,7 @@ export function AdminstrativeLevelRadio() {
       const uniqueLabels = Array.from(new Set(formattedLabels));
 
       if (uniqueLabels.length > 0) {
-        const text = `Level ${i + 1}: ${uniqueLabels.join(', ')}`;
+        const text = `Level ${i + 1}: ${uniqueLabels.join(", ")}`;
         result.push(
           <span key={i} className="inter text-xs text-wpBlue-200">
             {text}
@@ -52,10 +53,16 @@ export function AdminstrativeLevelRadio() {
   }, [countries, minLevel]);
 
   useEffect(() => {
-    if (countries.length > 0) {
+    if (minLevel === 0) {
+      setArea(AreaOptionEnum.EntireCountries);
+      setAdminLevel(AdminstrativeLevelEnum.Level0);
+    } else if (
+      (countries.length > 0 && levelEnumToNumber(adminLevel) > minLevel) ||
+      adminLevel === AdminstrativeLevelEnum.Level0
+    ) {
       setAdminLevel(AdminstrativeLevelEnum.Level1);
     }
-  }, [minLevel])
+  }, [minLevel]);
 
   const options = [
     {
@@ -97,6 +104,7 @@ export function AdminstrativeLevelRadio() {
         {spans}
       </div>
       <RadioGroup
+        defaultValue={adminLevel}
         value={adminLevel}
         className="w-full flex flex-row gap-2 flex-wrap"
       >

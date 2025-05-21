@@ -16,8 +16,8 @@ export type GADMCountries = {
 };
 
 /*
-* API Responses
-*/
+ * API Responses
+ */
 
 //Get areas by country
 export type GADMAreas = {
@@ -29,33 +29,32 @@ export type GADMAreas = {
   GID_5: string;
   NAME_0: string;
   NAME_1: string;
-  NAME_2: string,
+  NAME_2: string;
   NAME_3: string;
   NAME_4: string;
   NAME_5: string;
-}
+};
 
 //Get documentation
 export type Documentation = {
-  name: string
-  type: string
-  path: string
-  scheme: string
-  format: string
-  mediatype: string
-  encoding: string
-  schema: Schema
-}
+  name: string;
+  type: string;
+  path: string;
+  scheme: string;
+  format: string;
+  mediatype: string;
+  encoding: string;
+  schema: Schema;
+};
 
 export type Schema = {
-  fields: Field[]
-}
+  fields: Field[];
+};
 
 export type Field = {
-  name: string
-  type: string
-}
-
+  name: string;
+  type: string;
+};
 
 /*
  * Component
@@ -72,6 +71,7 @@ export enum AreaOptionEnum {
 }
 
 export enum AdminstrativeLevelEnum {
+  Level0 = "Level0",
   Level1 = "Level1",
   Level2 = "Level2",
   Level3 = "Level3",
