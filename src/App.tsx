@@ -3,11 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CountriesProvider } from "./context/CountriesProvider";
 import { SessionProvider } from "./context/SessionProvider";
 import { Toaster } from "sonner";
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-} from "react-router";
+import { BrowserRouter, Route, Routes } from "react-router";
 import { Areas } from "./components/pages/Areas";
 
 const queryClient = new QueryClient({
@@ -17,8 +13,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
-
 
 function App() {
   return (
