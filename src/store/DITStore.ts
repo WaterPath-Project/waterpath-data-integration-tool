@@ -1,4 +1,4 @@
-import { AdminstrativeLevelEnum, AreaOptionEnum, GADMAreas, GADMCountries } from "@/types";
+import { AdminstrativeLevelEnum, AreaOptionEnum, Documentation, GADMAreas, GADMCountries } from "@/types";
 import { create } from "zustand";
 
 type DITState = {
@@ -22,11 +22,15 @@ type DITState = {
   selectedAreas: string[];
   addSelectedArea: (area: string) => void;
   removeSelectedArea: (area: string) => void;
+  documentation: Documentation[];
+  setDocumentation: (documetation: Documentation[]) => void;
   reset: () => void;
 };
 
 export const useDITStore = create<DITState>((set) => ({
-  //State management of selected countries
+  /*
+  * State management of selected countries
+  */
   countries: [],
   addCountry: (country: GADMCountries) =>
     set((state) => ({ countries: [...state.countries, country] })),
@@ -36,14 +40,23 @@ export const useDITStore = create<DITState>((set) => ({
         (c) => c.COUNTRY_CODE !== country.COUNTRY_CODE
       ),
     })),
-  //State Management of selected area
+
+  /*
+  *   State Management of selected area
+  */
   area: AreaOptionEnum.EntireCountries,
   setArea: (newArea: AreaOptionEnum) => set({ area: newArea }),
-  //State Management of administrative level
+
+  /*
+  *   State Management of administrative level
+  */
   adminLevel: AdminstrativeLevelEnum.Level1,
   setAdminLevel: (newLevel: AdminstrativeLevelEnum) =>
     set({ adminLevel: newLevel }),
-  //State Management of simulation checkboxes
+
+  /*
+  *   State Management of simulation checkboxes
+  */
   hasHumanEmissions: false,
   setHasHumanEmissions: (newHasHumanEmissions: boolean) =>
     set({ hasHumanEmissions: newHasHumanEmissions }),
@@ -55,7 +68,10 @@ export const useDITStore = create<DITState>((set) => ({
     set({ hasConcentrations: newHasConcentrations }),
   hasRisks: false,
   setHasRisks: (newHasRisks: boolean) => set({ hasRisks: newHasRisks }),
-  //State Management of GADM areas
+
+  /*
+  *   State Management of GADM areas
+  */
   downLoadedAreas: [],
   addDownLoadedAreas: (newAreas: GADMAreas[]) =>
     set((state) => ({
@@ -67,7 +83,17 @@ export const useDITStore = create<DITState>((set) => ({
     set((state) => ({
       selectedAreas: state.selectedAreas.filter((a) => a !== area),
     })),
-  //Reset state
+
+  /*
+  *   State Management of documentation
+  */
+  documentation: [],
+  setDocumentation: (documentation: Documentation[]) =>
+    set({ documentation: documentation }),
+
+  /*
+  *   Reset all states to initial values.
+  */
   reset: () =>
     set({
       countries: [],

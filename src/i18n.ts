@@ -78,10 +78,35 @@ i18n
             noSelectedAreas: "No areas selected!",
             alreadyExists: "Area already added",
             alreadyExistsDescription: "You've already selected this area."
-          }
+          },
+          finetune: {
+            title: "Human emissions",
+            downloadButton: "Download",
+            uploadButton: "Upload",
+            previewButton: "Preview",
+            previewTitle: "CSV Preview",
+            previewDescription: "This is a preview of the data in the CSV file."
+          },
+          documentation: {
+            treatment: {
+              smallTitle: "Sanitation",
+              bigTitle: "Understanding Local Sanitation Systems",
+              description: "Explore detailed documentation about wastewater and sanitation infrastructure across selected regions.",
+            },
+            sanitation: {
+              smallTitle: "Treatment",
+              bigTitle: "Wastewater Treatment Documentation",
+              description: "Review reports and technical documentation about treatment plants, methods, and performance indicators.",
+            },
+            population: {
+              smallTitle: "Population",
+              bigTitle: "Demographic Data Overview",
+              description: "Access information about population distribution, density, and demographic trends relevant to your study.",
+            }
+          },
         },
       },
-    },
+    }
   });
 
 export default i18n;

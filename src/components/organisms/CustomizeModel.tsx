@@ -20,14 +20,14 @@ import { Loader } from "../atoms/Loader";
 export function CustomizeModel() {
   const { t } = useTranslation();
   const { sessionId } = useSession();
-  const { countries, area, reset } = useDITStore();
+  const { countries, area, setDocumentation, reset } = useDITStore();
   const navigate = useNavigate()
 
   const generateData = async () => {
     const result = await api.post(
       `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${sessionId}&gids=${countries.map(country => country.GID_0).join(",")}`,
     );
-    return result.data;
+    return result.data.resources;
   };
 
   const { isFetching, refetch } = useQuery({
@@ -47,6 +47,7 @@ export function CustomizeModel() {
         toast.error(t("customizeModel.errorMessage"));
       } else {
         toast.success(t("customizeModel.successMessage"));
+        setDocumentation(result.data);
         reset();
         navigate("/success")
       }

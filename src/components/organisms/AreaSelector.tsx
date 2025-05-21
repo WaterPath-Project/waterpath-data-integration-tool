@@ -18,7 +18,7 @@ import { Loader } from "../atoms/Loader";
 export function AreaSelector() {
     const { t } = useTranslation();
     const { sessionId } = useSession();
-    const { downLoadedAreas, adminLevel, selectedAreas, addSelectedArea, reset } = useDITStore();
+    const { downLoadedAreas, adminLevel, selectedAreas, addSelectedArea, setDocumentation, reset } = useDITStore();
     const [finalSelection, setFinalSelection] = useState<string>('');
     const dropdownRef = useRef<DynamicDropdownsRef>(null);
     const navigate = useNavigate()
@@ -27,7 +27,7 @@ export function AreaSelector() {
         const result = await api.post(
             `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${sessionId}&gids=${selectedAreas.join(",")}`,
         );
-        return result.data;
+        return result.data.resources;
     };
 
     const { isFetching, refetch } = useQuery({
@@ -63,6 +63,7 @@ export function AreaSelector() {
         } else {
             toast.success(t("customizeModel.successMessage"));
             reset();
+            setDocumentation(result.data);
             navigate("/success")
         }
     }
