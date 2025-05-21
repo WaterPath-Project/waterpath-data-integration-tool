@@ -16,7 +16,7 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <BrowserRouter basename="/waterpath-data-integrationt-tool/">
+    <BrowserRouter basename="/waterpath-data-integration-tool/">
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
           <CountriesProvider>

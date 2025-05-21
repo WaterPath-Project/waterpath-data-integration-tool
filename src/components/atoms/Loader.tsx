@@ -1,5 +1,5 @@
-import RiveComponent from '@rive-app/react-canvas';
-import loaderRiv from '@/components/assets/animations/loader.riv';
+import RiveComponent from "@rive-app/react-canvas";
+import loaderRiv from "@/components/assets/animations/loader.riv";
 
 /**
  * A full-screen overlay loader component that displays a semi-transparent background
@@ -12,13 +12,14 @@ import loaderRiv from '@/components/assets/animations/loader.riv';
  * <Loader message="Loading areas..." />
  */
 export function Loader({ message }: Readonly<{ message: string }>) {
-
-    return (
-        <div className="absolute inset-0 z-50 bg-wpBlue-900 bg-opacity-80 flex flex-col items-center justify-center">
-            <div className="w-80 h-80 ">
-                <RiveComponent src={loaderRiv} />
-            </div>
-            <span className="text-wpGreen-900 text-xl font-semibold w-80 text-center">{message}</span>
-        </div>
-    );
+  return (
+    <div className="fixed  inset-0 z-50 bg-wpBlue-900 bg-opacity-80 flex flex-col items-center justify-center">
+      <div className="w-80 h-80 ">
+        <RiveComponent src={loaderRiv} />
+      </div>
+      <span className="text-wpGreen-900 text-xl font-semibold w-80 text-center">
+        {message}
+      </span>
+    </div>
+  );
 }
