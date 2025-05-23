@@ -36,7 +36,12 @@ export const DynamicDropdowns = forwardRef<DynamicDropdownsRef, Props>(
 
         useImperativeHandle(ref, () => ({
             reset: () => {
-                setSelectedGIDs([]);
+                setSelectedGIDs(prev => {
+                    if (prev.length === 0) return [];
+                    const updated = [...prev];
+                    updated[updated.length - 1] = '';
+                    return updated;
+                });
                 onFinalSelect?.('');
             },
         }));
@@ -52,12 +57,16 @@ export const DynamicDropdowns = forwardRef<DynamicDropdownsRef, Props>(
             const currentValue = selectedGIDs[level] || '';
             const isDisabled = level !== 0 && !selectedGIDs[level - 1];
 
+            // Auto-select if only one option and not already selected
+            if (options.length === 1 && currentValue !== options[0].gid) {
+                setTimeout(() => handleChange(level, options[0].gid), 0); // avoid rendering issues
+            }
+
             return (
                 <Select
                     key={level}
-                    value={currentValue} // ✅ control the value directly
+                    value={currentValue}
                     onValueChange={(value) => handleChange(level, value)}
-                    disabled={isDisabled}
                 >
                     <SelectTrigger disabled={isDisabled}>
                         <SelectValue placeholder={`Select Level ${level}`} />

@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Button } from "../atoms/button";
 import { DownloadIcon, EyeIcon } from "lucide-react";
 import api from "@/api";
-import { useSession } from "@/context/SessionProvider";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -31,10 +30,9 @@ const documentCategoryContent: Record<DocumentCategoryEnum, {
     },
 };
 
-export function DocumentationAction({ documentCategory }: { documentCategory: DocumentCategoryEnum }) {
+export function DocumentationAction({ documentCategory, sessionId }: { documentCategory: DocumentCategoryEnum, sessionId: string | null }) {
     const { t } = useTranslation();
     const { smallTitle, bigTitle, description } = documentCategoryContent[documentCategory];
-    const { sessionId } = useSession();
     const [previewData, setPreviewData] = useState<string[][]>([]);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 

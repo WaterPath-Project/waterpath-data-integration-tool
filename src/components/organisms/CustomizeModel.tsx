@@ -10,54 +10,53 @@ import { useDITStore } from "@/store/DITStore";
 import { AreaOptionEnum } from "@/types";
 import { Transition } from "@headlessui/react";
 import api from "@/api";
-import { useQuery } from "@tanstack/react-query";
-import { useSession } from "@/context/SessionProvider";
 import classNames from "classnames";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { Loader } from "../atoms/Loader";
+import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 
 export function CustomizeModel() {
   const { t } = useTranslation();
-  const { sessionId } = useSession();
-  const { countries, area, setDocumentation, reset } = useDITStore();
+  const { countries, area, setDocumentation, reset, resetAreaNDocumentation, setSessionId } = useDITStore();
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false);
 
-  const generateData = async () => {
-    const result = await api.post(
-      `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${sessionId}&gids=${countries.map(country => country.GID_0).join(",")}`,
-    );
-    return result.data.resources;
-  };
-
-  const { isFetching, refetch } = useQuery({
-    queryKey: ["generateData"],
-    queryFn: generateData,
-    enabled: false,
-  });
-
+  useEffect(() => { resetAreaNDocumentation() }, [])
 
   const handleClick = async () => {
     if (area === AreaOptionEnum.SpecificAreas) {
-      navigate("/areas")
+      navigate("/areas");
+      return;
     }
-    else {
-      const result = await refetch();
-      if (result.isError) {
-        toast.error(t("customizeModel.errorMessage"));
-      } else {
-        toast.success(t("customizeModel.successMessage"));
-        setDocumentation(result.data);
-        reset();
-        navigate("/success")
-      }
+
+    setLoading(true);
+    const newSessionId = uuidv4();
+    setSessionId(newSessionId);
+
+    try {
+      await api.post(`https://dev.waterpath.venthic.com/api/session/create/?session_id=${newSessionId}`);
+      const result = await api.post(
+        `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${newSessionId}&gids=${countries.map(country => country.GID_0).join(",")}`
+      );
+
+      setDocumentation(result.data.resources);
+      reset();
+      toast.success(t("customizeModel.successMessage"));
+      navigate(`/success/${newSessionId}`);
+    } catch (error) {
+      console.error("Error during session/data generation:", error);
+      toast.error(t("customizeModel.errorMessage"));
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
 
   return (
     <>
-      {isFetching && (
+      {loading && (
         <Loader message={t("loader.generateCountriesData")} />
       )}
       <div className={classNames("bg-wpGray-100 rounded-2xl p-10 flex flex-col")}>
@@ -90,15 +89,10 @@ export function CustomizeModel() {
               </div>
             </div>
           </div>
-          {/* <div className="w-full sm:w-2/5 h-96 flex bg-wpBlue-100 justify-center align-middle rounded-2xl">
-          <span className="place-self-center font-inter font-bold text-xs text-wpBlue">
-            MAP
-          </span>
-        </div> */}
         </div>
         <div className="border border-wpBlue-500 my-4"></div>
         <Button
-          disabled={countries.length === 0 || isFetching}
+          disabled={countries.length === 0 || loading}
           onClick={handleClick}
           variant={"secondary"}
           className="rounded-[8px] font-inter font-bold text-xs w-64"

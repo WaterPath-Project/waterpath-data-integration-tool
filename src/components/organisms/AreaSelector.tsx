@@ -8,33 +8,43 @@ import { DynamicDropdowns, DynamicDropdownsRef } from "../molecules/DynamicAreas
 import { useDITStore } from "@/store/DITStore";
 import { levelEnumToNumber } from "@/tools/utils";
 import api from "@/api";
-import { useQuery } from "@tanstack/react-query";
-import { useSession } from "@/context/SessionProvider";
 import { SelectedAreaList } from "../molecules/SelectedAreaList";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { Loader } from "../atoms/Loader";
+import { v4 as uuidv4 } from 'uuid';
 
 export function AreaSelector() {
     const { t } = useTranslation();
-    const { sessionId } = useSession();
-    const { downLoadedAreas, adminLevel, selectedAreas, addSelectedArea, setDocumentation, reset } = useDITStore();
+    const { downLoadedAreas, adminLevel, selectedAreas, addSelectedArea, setDocumentation, setSessionId, reset } = useDITStore();
     const [finalSelection, setFinalSelection] = useState<string>('');
     const dropdownRef = useRef<DynamicDropdownsRef>(null);
     const navigate = useNavigate()
 
-    const generateData = async () => {
-        const result = await api.post(
-            `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${sessionId}&gids=${selectedAreas.join(",")}`,
-        );
-        return result.data.resources;
-    };
+    const [loading, setLoading] = useState(false);
 
-    const { isFetching, refetch } = useQuery({
-        queryKey: ["generateData"],
-        queryFn: generateData,
-        enabled: false,
-    });
+    const handleSubmit = async () => {
+        const newSessionId = uuidv4();
+        setSessionId(newSessionId);
+        setLoading(true);
+
+        try {
+            await api.post(`https://dev.waterpath.venthic.com/api/session/create/?session_id=${newSessionId}`);
+            const result = await api.post(
+                `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${newSessionId}&gids=${selectedAreas.join(",")}`
+            );
+
+            setDocumentation(result.data.resources);
+            reset();
+            toast.success(t("customizeModel.successMessage"));
+            navigate(`/success/${newSessionId}`);
+        } catch (error) {
+            console.error("Error:", error);
+            toast.error(t("customizeModel.errorMessage"));
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleFinalSelect = (value: string) => {
         setFinalSelection(value);
@@ -56,21 +66,11 @@ export function AreaSelector() {
         setFinalSelection('');
     };
 
-    const handleSubmit = async () => {
-        const result = await refetch();
-        if (result.isError) {
-            toast.error(t("customizeModel.errorMessage"));
-        } else {
-            toast.success(t("customizeModel.successMessage"));
-            reset();
-            setDocumentation(result.data);
-            navigate("/success")
-        }
-    }
+
 
     return (
         <>
-            {isFetching && (
+            {loading && (
                 <Loader message={t("loader.generateAreasData")} />
             )}
             <div className={classNames("bg-wpGray-100 rounded-2xl p-10 flex flex-col gap-4 ")}>
@@ -84,7 +84,7 @@ export function AreaSelector() {
                     variant={"primary"}
                     onClick={handleAddNewArea}
                     disabled={!finalSelection}
-                    className="rounded-[8px] flex items-center gap-2 font-inter font-semibold text-xs w-64 text-wpWhite"
+                    className="self-end rounded-[8px] flex items-center gap-2 font-inter font-semibold text-xs w-64 text-wpWhite"
                 ><PlusCircleIcon />{t("areaSelector.addButton")}</Button>
                 <div className="border border-wpBlue-500"></div>
                 <span className="font-outfit font-extrabold text-[2rem] text-wpBlue">
@@ -93,6 +93,7 @@ export function AreaSelector() {
                 <SelectedAreaList level={levelEnumToNumber(adminLevel)} />
                 <Button
                     onClick={handleSubmit}
+                    disabled={selectedAreas.length === 0}
                     variant={"secondary"}
                     className=" rounded-[8px] font-inter font-bold text-xs w-64"
                 >

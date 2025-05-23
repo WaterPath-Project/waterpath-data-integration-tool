@@ -2,6 +2,8 @@ import { AdminstrativeLevelEnum, AreaOptionEnum, Documentation, GADMAreas, GADMC
 import { create } from "zustand";
 
 type DITState = {
+  sessionId: string | null;
+  setSessionId: (sessionId: string | null) => void;
   countries: GADMCountries[];
   addCountry: (country: GADMCountries) => void;
   removeCountry: (country: GADMCountries) => void;
@@ -25,9 +27,17 @@ type DITState = {
   documentation: Documentation[];
   setDocumentation: (documetation: Documentation[]) => void;
   reset: () => void;
+  resetAreaNDocumentation: () => void;
 };
 
 export const useDITStore = create<DITState>((set) => ({
+  /*
+* State management of sessionId
+*/
+  sessionId: null,
+  setSessionId: (newSessionId: string | null) =>
+    set({ sessionId: newSessionId }),
+
   /*
   * State management of selected countries
   */
@@ -105,5 +115,10 @@ export const useDITStore = create<DITState>((set) => ({
       hasRisks: false,
       downLoadedAreas: [],
       selectedAreas: [],
+    }),
+  resetAreaNDocumentation: () =>
+    set({
+      selectedAreas: [],
+      documentation: []
     }),
 }));

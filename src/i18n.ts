@@ -85,18 +85,20 @@ i18n
             uploadButton: "Upload",
             previewButton: "Preview",
             previewTitle: "CSV Preview",
-            previewDescription: "This is a preview of the data in the CSV file."
+            previewDescription: "This is a preview of the data in the CSV file.",
+            finishButton: "Finish",
           },
           documentation: {
             treatment: {
-              smallTitle: "Sanitation",
-              bigTitle: "Understanding Local Sanitation Systems",
-              description: "Explore detailed documentation about wastewater and sanitation infrastructure across selected regions.",
-            },
-            sanitation: {
               smallTitle: "Treatment",
               bigTitle: "Wastewater Treatment Documentation",
               description: "Review reports and technical documentation about treatment plants, methods, and performance indicators.",
+
+            },
+            sanitation: {
+              smallTitle: "Sanitation",
+              bigTitle: "Understanding Local Sanitation Systems",
+              description: "Explore detailed documentation about wastewater and sanitation infrastructure across selected regions.",
             },
             population: {
               smallTitle: "Population",
