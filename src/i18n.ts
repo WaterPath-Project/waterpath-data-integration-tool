@@ -35,7 +35,7 @@ i18n
             title: "GloWPa version",
             subtitle:
               "Borem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a.",
-            button: "Download GloWPa version",
+            button: "Download GloWPa",
           },
           loader: {
             generateCountriesData: "Generate countries data...",
