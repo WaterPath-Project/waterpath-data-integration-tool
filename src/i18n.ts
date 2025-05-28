@@ -38,14 +38,14 @@ i18n
             button: "Download GloWPa",
           },
           loader: {
-            generateCountriesData: "Generate countries data...",
-            generateAreasData: "Generate areas data...",
-            loadingAllTheAreas: "Loading all the areas",
+            generateCountriesData: "Generate country data...",
+            generateAreasData: "Generate area data...",
+            loadingAllTheAreas: "Loading all areas",
           },
           customizeModel: {
             title: "Customize Model",
             subtitle:
-              "Version 1.0 of GloWPa includes the following data sources. Customize it to fit your needs.",
+              "Version 1.0 of GloWPa includes the following data sources.",
             simulate: "Simulate",
             livestockEmissions: "Livestock Emissions",
             concentrations: "Concentrations",
