@@ -1,6 +1,6 @@
 import { Button } from "../atoms/button";
 import { useRef, useState } from "react";
-import { PlusCircleIcon } from "lucide-react";
+
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { Card } from "../atoms/card";
@@ -17,7 +17,6 @@ import { v4 as uuidv4 } from 'uuid';
 export function AreaSelector() {
     const { t } = useTranslation();
     const { downLoadedAreas, adminLevel, selectedAreas, addSelectedArea, setDocumentation, setSessionId, reset } = useDITStore();
-    const [finalSelection, setFinalSelection] = useState<string>('');
     const dropdownRef = useRef<DynamicDropdownsRef>(null);
     const navigate = useNavigate()
 
@@ -46,26 +45,26 @@ export function AreaSelector() {
         }
     };
 
-    const handleFinalSelect = (value: string) => {
-        setFinalSelection(value);
-    };
+    // Function to handle adding a new area
+    const handleAddNewArea = (value: string) => {
+        if (value) {
+            const selection = value;
 
-    const handleAddNewArea = () => {
-        const selection = finalSelection;
-
-        // Check for duplicate
-        if (selectedAreas.includes(selection)) {
-            toast.warning(t("areaSelector.alreadyExists"), {
-                description: t("areaSelector.alreadyExistsDescription"),
-            });
+            console.log("Selected area:", selection);
+            console.log("Selected areas:", selectedAreas);
+            // Check for duplicate
+            if (selectedAreas.includes(selection)) {
+                toast.warning(t("areaSelector.alreadyExists"), {
+                    description: t("areaSelector.alreadyExistsDescription"),
+                });
+                return;
+            }
+            addSelectedArea(selection);
+            dropdownRef.current?.reset();
+        } else {
             return;
         }
-
-        addSelectedArea(selection);
-        dropdownRef.current?.reset();
-        setFinalSelection('');
-    };
-
+    }
 
 
     return (
@@ -78,14 +77,8 @@ export function AreaSelector() {
                     {t("areaSelector.title")}
                 </span>
                 <Card className="flex flex-row gap-4 items-center justify-between bg-white p-4 rounded-[8px]">
-                    <DynamicDropdowns ref={dropdownRef} areas={downLoadedAreas} maxLevel={levelEnumToNumber(adminLevel) + 1} onFinalSelect={handleFinalSelect} />
+                    <DynamicDropdowns ref={dropdownRef} areas={downLoadedAreas} maxLevel={levelEnumToNumber(adminLevel) + 1} onFinalSelect={handleAddNewArea} />
                 </Card>
-                <Button
-                    variant={"primary"}
-                    onClick={handleAddNewArea}
-                    disabled={!finalSelection}
-                    className="self-end rounded-[8px] flex items-center gap-2 font-inter font-semibold text-xs w-64 text-wpWhite"
-                ><PlusCircleIcon />{t("areaSelector.addButton")}</Button>
                 <div className="border border-wpBlue-500"></div>
                 <span className="font-outfit font-extrabold text-[2rem] text-wpBlue">
                     {t("areaSelector.selectedAreasTitle")}
