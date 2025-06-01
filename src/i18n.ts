@@ -41,6 +41,7 @@ i18n
             generateCountriesData: "Generate country data...",
             generateAreasData: "Generate area data...",
             loadingAllTheAreas: "Loading all areas",
+            finishProcess: "Finishing finetuning...",
           },
           customizeModel: {
             title: "Customize Model",
@@ -90,6 +91,10 @@ i18n
             previewTitle: "CSV Preview",
             previewDescription: "This is a preview of the data in the CSV file.",
             finishButton: "Finish",
+          },
+          success: {
+            backHomeButton: "Back to home",
+            thanks: "Thanks for using the tool.\n <1>Click here</1> for more instructions about how to use the data."
           },
           documentation: {
             treatment: {

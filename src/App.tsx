@@ -1,4 +1,4 @@
-import { Home, NotFound, Finetune } from "./components/pages";
+import { Home, NotFound, Finetune, Success } from "./components/pages";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CountriesProvider } from "./context/CountriesProvider";
 import { Toaster } from "sonner";
@@ -22,6 +22,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/areas" element={<Areas />} />
             <Route path="/finetune/:session_id?" element={<Finetune />} />
+            <Route path="/success" element={<Success />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Toaster richColors />

@@ -43,7 +43,8 @@ export function Finetune() {
         setIsActive(true);
         setTimeout(() => {
             setIsActive(false);
-        }, 5000); // 5000 ms = 5 seconds
+            navigate(`/success`);
+        }, 3000); // 5000 ms = 5 seconds
     };
 
     useEffect(() => {

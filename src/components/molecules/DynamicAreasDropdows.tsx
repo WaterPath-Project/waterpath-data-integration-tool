@@ -83,7 +83,7 @@ export const DynamicDropdowns = forwardRef<DynamicDropdownsRef, Props>(
                     <SelectContent>
                         {level === maxLevel - 1 && (
                             <>
-                                <SelectItem key="__SELECT_ALL__" value="__SELECT_ALL__">
+                                <SelectItem className='mt-2' key="__SELECT_ALL__" value="__SELECT_ALL__">
                                     {t("areaSelector.dropdown.selectAll")}
                                 </SelectItem>
                                 <div
