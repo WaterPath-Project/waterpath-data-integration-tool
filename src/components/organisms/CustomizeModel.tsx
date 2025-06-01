@@ -44,7 +44,7 @@ export function CustomizeModel() {
       setDocumentation(result.data.resources);
       reset();
       toast.success(t("customizeModel.successMessage"));
-      navigate(`/success/${newSessionId}`);
+      navigate(`/finetune/${newSessionId}`);
     } catch (error) {
       console.error("Error during session/data generation:", error);
       toast.error(t("customizeModel.errorMessage"));

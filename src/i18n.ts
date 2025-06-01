@@ -77,7 +77,10 @@ i18n
             selectedAreasTitle: "Selected areas",
             noSelectedAreas: "No areas selected!",
             alreadyExists: "Area already added",
-            alreadyExistsDescription: "You've already selected this area."
+            alreadyExistsDescription: "You've already selected this area.",
+            dropdown: {
+              selectAll: "Select all",
+            }
           },
           finetune: {
             title: "Human emissions",

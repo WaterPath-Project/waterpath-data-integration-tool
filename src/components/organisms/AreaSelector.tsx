@@ -36,7 +36,7 @@ export function AreaSelector() {
             setDocumentation(result.data.resources);
             reset();
             toast.success(t("customizeModel.successMessage"));
-            navigate(`/success/${newSessionId}`);
+            navigate(`/finetune/${newSessionId}`);
         } catch (error) {
             console.error("Error:", error);
             toast.error(t("customizeModel.errorMessage"));
@@ -46,25 +46,23 @@ export function AreaSelector() {
     };
 
     // Function to handle adding a new area
-    const handleAddNewArea = (value: string) => {
-        if (value) {
-            const selection = value;
+    const handleAddNewArea = (value: string | string[]) => {
+        if (!value) return;
 
-            console.log("Selected area:", selection);
-            console.log("Selected areas:", selectedAreas);
-            // Check for duplicate
+        const values = Array.isArray(value) ? value : [value];
+
+        for (const selection of values) {
             if (selectedAreas.includes(selection)) {
                 toast.warning(t("areaSelector.alreadyExists"), {
                     description: t("areaSelector.alreadyExistsDescription"),
                 });
-                return;
+                continue;
             }
             addSelectedArea(selection);
-            dropdownRef.current?.reset();
-        } else {
-            return;
         }
-    }
+
+        dropdownRef.current?.reset();
+    };
 
 
     return (

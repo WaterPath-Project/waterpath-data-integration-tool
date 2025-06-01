@@ -14,7 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { DownloadIcon } from "lucide-react";
 
-export function Success() {
+export function Finetune() {
     const { t } = useTranslation();
     const { documentation, setDocumentation } = useDITStore();
     const [isActive, setIsActive] = useState(false);

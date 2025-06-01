@@ -8,11 +8,12 @@ import {
     SelectItem,
 } from "@/components/atoms/select";
 import { getNextLevelOptions } from '@/tools/utils';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     areas: GADMAreas[];
     maxLevel: number;
-    onFinalSelect?: (value: string) => void;
+    onFinalSelect?: (value: string | string[]) => void;
 }
 
 export interface DynamicDropdownsRef {
@@ -20,15 +21,23 @@ export interface DynamicDropdownsRef {
 }
 
 export const DynamicDropdowns = forwardRef<DynamicDropdownsRef, Props>(
+
     ({ areas, maxLevel, onFinalSelect }, ref) => {
+        const { t } = useTranslation();
         const [selectedGIDs, setSelectedGIDs] = useState<string[]>([]);
 
         const handleChange = (level: number, gid: string) => {
             const updated = [...selectedGIDs.slice(0, level), gid];
             setSelectedGIDs(updated);
-
             if (level === maxLevel - 1 && gid) {
-                onFinalSelect?.(gid);
+                if (gid === "__SELECT_ALL__") {
+                    const parentGID = selectedGIDs[level - 1] || '';
+                    const options = getNextLevelOptions(areas, level - 1, parentGID);
+                    const allGIDs = options.map(opt => opt.gid);
+                    onFinalSelect?.(allGIDs);
+                } else {
+                    onFinalSelect?.(gid);
+                }
             } else if (level < maxLevel - 1) {
                 onFinalSelect?.('');
             }
@@ -72,6 +81,17 @@ export const DynamicDropdowns = forwardRef<DynamicDropdownsRef, Props>(
                         <SelectValue placeholder={`Select Level ${level}`} />
                     </SelectTrigger>
                     <SelectContent>
+                        {level === maxLevel - 1 && (
+                            <>
+                                <SelectItem key="__SELECT_ALL__" value="__SELECT_ALL__">
+                                    {t("areaSelector.dropdown.selectAll")}
+                                </SelectItem>
+                                <div
+                                    className="border border-wpBlue-500 m-2"
+                                >
+                                </div>
+                            </>
+                        )}
                         {options.map(opt => (
                             <SelectItem key={opt.gid} value={opt.gid}>
                                 {opt.name}

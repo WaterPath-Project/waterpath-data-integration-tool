@@ -9,11 +9,21 @@ import { useEffect } from "react";
 import { GADMAreas } from "@/types";
 import { Loader } from "../atoms/Loader";
 import { useTranslation, } from "react-i18next";
+import { useNavigate } from "react-router";
 
 
 export function Areas() {
     const { countries, adminLevel, addDownLoadedAreas } = useDITStore();
     const { t } = useTranslation();
+
+    // Redirect to home if no countries are available
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (countries.length === 0) {
+            navigate("/");
+        }
+    }, []);
 
     const breadcrumbItems = [
         { name: t("breadcrumb.home"), url: "/" },
