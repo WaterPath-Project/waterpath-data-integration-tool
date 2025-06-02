@@ -45,7 +45,7 @@ const multiSelectVariants = cva("m-1 transition ease-in-out delay-150 ", {
  */
 interface MultiSelectProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof multiSelectVariants> {
+  VariantProps<typeof multiSelectVariants> {
   /**
    * An array of option objects to be displayed in the multi-select component.
    * Each option object has a label, value, and an optional icon.
@@ -173,6 +173,7 @@ export const MultiSelect = React.forwardRef<
         <PopoverTrigger asChild>
           <Button
             ref={ref}
+            type="button"
             {...props}
             onClick={handleTogglePopover}
             className={cn(
