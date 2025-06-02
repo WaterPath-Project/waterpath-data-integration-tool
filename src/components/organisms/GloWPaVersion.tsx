@@ -1,12 +1,17 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "../atoms/button";
-import { DownloadIcon } from "lucide-react";
+import { DownloadIcon, BookTextIcon } from "lucide-react";
 
 export function GloWPaVersion() {
   const { t } = useTranslation();
 
   const handleClick = () => {
     window.open("https://git.wur.nl/glowpa/glowpa-r/-/archive/main/glowpa-r-main.zip", "_blank");
+  }
+
+  
+  const handleDocClick = () => {
+    window.open('https://waterpath-toolkit.org/docs/modelling-guidelines', '_blank');
   }
 
   return (
@@ -20,13 +25,22 @@ export function GloWPaVersion() {
             {t("glowpa.subtitle")}
           </span>
         </div>
+        <div className="flex flex-col">
         <Button
           onClick={handleClick}
           variant={"primary"}
           className="rounded-[8px] font-inter font-bold text-xs w-64 flex  gap-2 items-center"
         >
-          <DownloadIcon />{t("glowpa.button")}
+          <DownloadIcon />{t("glowpa.download")}
         </Button>
+        <Button
+          onClick={handleDocClick}
+          variant={"secondary"}
+          className="rounded-[8px] font-inter font-bold text-xs w-64 flex  gap-2 items-center mt-3"
+        >
+          <BookTextIcon />{t("glowpa.documentation")}
+        </Button>
+        </div>
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ export function SimulateCheckbox() {
   } = useDITStore();
 
   return (
-    <div className="flex flex-col  text-wpBlue gap-2">
+    <div className="flex flex-col  text-gray-400 gap-2">
       <span className="inter text-sm font-semibold">
         {t("customizeModel.simulate")}
       </span>
@@ -24,6 +24,7 @@ export function SimulateCheckbox() {
         <div className="flex flex-row gap-2 items-center">
           <Checkbox
             id="emissions"
+            disabled
             checked={hasHumanEmissions}
             onCheckedChange={(checked) =>
               setHasHumanEmissions(checked as boolean)
@@ -36,6 +37,7 @@ export function SimulateCheckbox() {
         <div className="flex flex-row gap-2 items-center">
           <Checkbox
             id="livestockEmissions"
+            disabled
             checked={hasLivestockEmissions}
             onCheckedChange={(checked) =>
               setHasLivestockEmissions(checked as boolean)
@@ -48,6 +50,7 @@ export function SimulateCheckbox() {
         <div className="flex flex-row gap-2 items-center">
           <Checkbox
             id="concentrations"
+            disabled
             checked={hasConcentrations}
             onCheckedChange={(checked) =>
               setHasConcentrations(checked as boolean)
@@ -60,6 +63,7 @@ export function SimulateCheckbox() {
         <div className="flex flex-row gap-2 items-center">
           <Checkbox
             id="risk"
+            disabled
             checked={hasRisks}
             onCheckedChange={(checked) => setHasRisks(checked as boolean)}
           />

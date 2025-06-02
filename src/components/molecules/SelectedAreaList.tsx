@@ -3,7 +3,6 @@ import { Button } from "@/components/atoms/button";
 import { useDITStore } from "@/store/DITStore";
 import { GADMAreas } from "@/types";
 import { useTranslation } from "react-i18next";
-import { Trash2Icon } from "lucide-react";
 
 interface SelectedAreaListProps {
     level: number;
@@ -33,7 +32,7 @@ export const SelectedAreaList: React.FC<SelectedAreaListProps> = ({ level }) => 
     }).filter(Boolean);
 
     return (
-        <Card className="min-h-40 bg-white p-4 rounded-[8px] flex flex-col gap-2 justify-center">
+        <Card className="min-h-40 bg-white p-4 rounded-[8px] flex flex-col gap-2 justify-center font-inter text-xs text-wpBlue-500 font-medium">
             {matchedAreas.length === 0 && <span className=" font-inter font-semibold text-2xl text-wpBlue text-center">
                 {t("areaSelector.noSelectedAreas")}
             </span>}
@@ -45,11 +44,11 @@ export const SelectedAreaList: React.FC<SelectedAreaListProps> = ({ level }) => 
                 >
                     <span className="text-gray-800">{area?.namePath}</span>
                     <Button
-                        className="rounded-[8px] flex items-center gap-2 font-inter font-semibold text-xs bg-red-400 hover:bg-red-500 text-wpWhite"
-                        size="icon"
+                        className="flex border-0 items-center gap-2 font-inter font-semibold text-xs"
+                        
                         onClick={() => removeSelectedArea(area?.gid ?? "")}
                     >
-                        <Trash2Icon />
+                        remove
                     </Button>
                 </div>
             ))}

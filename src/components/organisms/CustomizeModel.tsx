@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import {
   CountriesOfInterestMultiSelect,
-  // SimulateCheckbox,
+  SimulateCheckbox,
   CountriesAreaRadio,
   AdminstrativeLevelRadio,
 } from "../molecules";
@@ -69,7 +69,7 @@ export function CustomizeModel() {
               {t("customizeModel.subtitle")}
             </span>
             <div className=" mt-4 flex flex-col gap-8">
-              {/* <SimulateCheckbox /> */}
+              <SimulateCheckbox />
               <div className="flex flex-col gap-2">
                 <CountriesOfInterestMultiSelect />
                 <CountriesAreaRadio />

@@ -12,7 +12,7 @@ import { useNavigate, useParams } from "react-router";
 import api from "@/api";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { DownloadIcon } from "lucide-react";
+import { FastForwardIcon } from "lucide-react";
 
 export function Finetune() {
     const { t } = useTranslation();
@@ -91,7 +91,7 @@ export function Finetune() {
                                 variant={"secondary"}
                                 className="rounded-[8px] font-inter font-bold text-xs w-64 flex  gap-2 items-center"
                             >
-                                <DownloadIcon />{t("finetune.finishButton")}
+                                <FastForwardIcon />{t("finetune.finishButton")}
                             </Button>
                         </div>
                     </div>

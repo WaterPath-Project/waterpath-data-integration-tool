@@ -9,6 +9,8 @@ import {
 } from "@/components/atoms/select";
 import { getNextLevelOptions } from '@/tools/utils';
 import { useTranslation } from 'react-i18next';
+import { SelectedAreaList } from './SelectedAreaList';
+import { useDITStore } from "@/store/DITStore";
 
 interface Props {
     areas: GADMAreas[];
@@ -21,6 +23,7 @@ export interface DynamicDropdownsRef {
 }
 
 export const DynamicDropdowns = forwardRef<DynamicDropdownsRef, Props>(
+
 
     ({ areas, maxLevel, onFinalSelect }, ref) => {
         const { t } = useTranslation();
@@ -56,6 +59,7 @@ export const DynamicDropdowns = forwardRef<DynamicDropdownsRef, Props>(
         }));
 
         const renderDropdown = (level: number) => {
+            const { selectedAreas } = useDITStore();
             const parentGID = selectedGIDs[level - 1] || '';
             const options =
                 level === 0
@@ -93,7 +97,7 @@ export const DynamicDropdowns = forwardRef<DynamicDropdownsRef, Props>(
                             </>
                         )}
                         {options.map(opt => (
-                            <SelectItem key={opt.gid} value={opt.gid}>
+                            <SelectItem disabled={selectedAreas.includes(opt.gid)} key={opt.gid} value={opt.gid}>
                                 {opt.name}
                             </SelectItem>
                         ))}

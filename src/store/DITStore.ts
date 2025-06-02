@@ -67,7 +67,7 @@ export const useDITStore = create<DITState>((set) => ({
   /*
   *   State Management of simulation checkboxes
   */
-  hasHumanEmissions: false,
+  hasHumanEmissions: true,
   setHasHumanEmissions: (newHasHumanEmissions: boolean) =>
     set({ hasHumanEmissions: newHasHumanEmissions }),
   hasLivestockEmissions: false,
