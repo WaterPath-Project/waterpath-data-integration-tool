@@ -92,9 +92,12 @@ i18n
             previewTitle: "CSV Preview",
             previewDescription: "This is a preview of the generated data in CSV format.",
             finishButton: "Finish",
+            errorMessage: "Oops! Something went wrong. Please try again.",
+            successMessage:
+              "Success! You can now use the session data.",
           },
           success: {
-            backHomeButton: "Generate new input data",
+            backHomeButton: "Download again",
             documentationButton: "View instructions",
             thanks: "You have generated your GloWPa input data successfully!",
             instructions: "Check the downloaded file and use the instructions below on how to use it with the model code."

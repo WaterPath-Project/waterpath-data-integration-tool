@@ -22,7 +22,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/areas" element={<Areas />} />
             <Route path="/finetune/:session_id?" element={<Finetune />} />
-            <Route path="/success" element={<Success />} />
+            <Route path="/success/:session_id?" element={<Success />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Toaster richColors />

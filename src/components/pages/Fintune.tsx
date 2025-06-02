@@ -7,7 +7,7 @@ import { DocumentationAction } from "../molecules/DocumentationAction";
 import { DocumentCategoryEnum } from "@/types";
 import { Button } from "../atoms/button";
 import { Loader } from "../atoms/Loader";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import api from "@/api";
 import { useQuery } from "@tanstack/react-query";
@@ -17,7 +17,6 @@ import { FastForwardIcon } from "lucide-react";
 export function Finetune() {
     const { t } = useTranslation();
     const { documentation, setDocumentation } = useDITStore();
-    const [isActive, setIsActive] = useState(false);
     const { session_id } = useParams();
     const navigate = useNavigate()
 
@@ -39,12 +38,39 @@ export function Finetune() {
         enabled: session_id !== undefined && documentation.length === 0,
     });
 
-    const handleClick = () => {
-        setIsActive(true);
-        setTimeout(() => {
-            setIsActive(false);
-            navigate(`/success`);
-        }, 3000); // 5000 ms = 5 seconds
+    const downloadDocumentation = async () => {
+        const result = await api.get(
+            `https://dev.waterpath.venthic.com/api/data/input/download?session_id=${session_id}`,
+            {
+                responseType: 'blob'
+            }
+        );
+        return result.data;
+    };
+
+    const { isFetching: isActive, refetch } = useQuery({
+        queryKey: ["downloadDocumentation", session_id],
+        queryFn: downloadDocumentation,
+        enabled: false,
+    });
+
+    const handleClick = async () => {
+        const result = await refetch();
+        if (result.isError || !result.data) {
+            toast.error(t("finetune.errorMessage"));
+        } else {
+            toast.success(t("finetune.successMessage"));
+            const blob = new Blob([result.data], { type: 'application/zip' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'session.zip');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            navigate(`/success/${session_id}`);
+        }
     };
 
     useEffect(() => {

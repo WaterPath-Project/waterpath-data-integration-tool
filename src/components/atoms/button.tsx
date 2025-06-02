@@ -17,7 +17,7 @@ const buttonVariants = cva(
         secondary:
           "bg-wpBlue text-wpWhite hover:bg-wpBlue-300",
         ghost: "hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-neutral-800 dark:hover:text-neutral-50",
-        link: "text-neutral-900 underline-offset-4 hover:underline dark:text-neutral-50",
+        link: "text-wpBlue underline-offset-4 hover:underline ",
         primary: "bg-wpGreen-900 text-wpBlue hover:bg-wpGreen-700",
         tertiary: "bg-wpBrown-200 text-wpBlue hover:bg-wpBrown-500",
       },

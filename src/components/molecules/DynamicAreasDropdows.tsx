@@ -9,7 +9,6 @@ import {
 } from "@/components/atoms/select";
 import { getNextLevelOptions } from '@/tools/utils';
 import { useTranslation } from 'react-i18next';
-import { SelectedAreaList } from './SelectedAreaList';
 import { useDITStore } from "@/store/DITStore";
 
 interface Props {

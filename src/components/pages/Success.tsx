@@ -1,30 +1,71 @@
 
-import { useNavigate } from "react-router";
+import { useParams } from "react-router";
 import { Button } from "../atoms/button";
 import { BasicLayout } from "../templates";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { BookTextIcon, RefreshCcwIcon } from "lucide-react";
+import api from "@/api";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Loader } from "../atoms/Loader";
 
 export function Success() {
-    const navigate = useNavigate();
+    const { session_id } = useParams();
     const { t } = useTranslation();
+
+    const downloadDocumentation = async () => {
+        const result = await api.get(
+            `https://dev.waterpath.venthic.com/api/data/input/download?session_id=${session_id}`,
+            {
+                responseType: 'blob'
+            }
+        );
+        return result.data;
+    };
+
+    const { isFetching, refetch } = useQuery({
+        queryKey: ["downloadDocumentation", session_id],
+        queryFn: downloadDocumentation,
+        enabled: false,
+    });
+
+    const handleClick = async () => {
+        const result = await refetch();
+        if (result.isError || !result.data) {
+            toast.error(t("finetune.errorMessage"));
+        } else {
+            toast.success(t("finetune.successMessage"));
+            const blob = new Blob([result.data], { type: 'application/zip' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'session.zip');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        }
+    };
 
     const handleDocClick = () => {
         window.open('https://waterpath-toolkit.org/docs/modelling-guidelines', '_blank');
-      }
-    
+    }
+
     return (
-        <BasicLayout>
-            <div className="whitespace-pre-line sm:mx-4 mt-20 rounded-[10px] p-16 bg-wpBrown rounded-2xl w-full flex font-outfit flex-col gap-8 font-outfit text-wpBlue">
-                <Trans className="font-extrabold text-2xl" i18nKey="success.thanks" parent="span" />
-                <Trans className="font-medium" i18nKey="success.instructions" components={{
-                    1: <a className="text-wpBlue-200 underline" href="https://www.google.com" target="_blank" rel="noopener noreferrer" />
-                }} parent="span" />
-                <div className="flex">
-                <Button variant={"primary"} className="rounded-[8px] mr-2 font-inter font-bold text-xs w-64 flex  gap-2 items-center" onClick={() => handleDocClick}><BookTextIcon /> {t("success.documentationButton")}</Button>
-                <Button variant={"secondary"} className="rounded-[8px] font-inter font-bold text-xs w-64 flex  gap-2 items-center" onClick={() => navigate("/")}><RefreshCcwIcon/> {t("success.backHomeButton")}</Button>
+        <>
+            {isFetching && (
+                <Loader message={t("loader.finishProcess")} />
+            )}
+            <BasicLayout>
+                <div className="whitespace-pre-line sm:mx-4 mt-20  p-16 bg-wpBrown rounded-2xl w-full flex flex-col gap-8 font-outfit text-wpBlue">
+                    <span className="font-extrabold text-2xl">{t("success.thanks")}</span>
+                    <span className="font-medium">{t("success.instructions")}</span>
+                    <div className="flex">
+                        <Button variant={"primary"} className="rounded-[8px] mr-2 font-inter font-bold text-xs w-64 flex  gap-2 items-center" onClick={handleDocClick}><BookTextIcon /> {t("success.documentationButton")}</Button>
+                        <Button variant={"link"} className="rounded-[8px] font-inter font-bold text-xs w-64 flex  gap-2 items-center" onClick={handleClick}><RefreshCcwIcon /> {t("success.backHomeButton")}</Button>
+                    </div>
                 </div>
-            </div>
-        </BasicLayout>
+            </BasicLayout>
+        </>
     );
 }
