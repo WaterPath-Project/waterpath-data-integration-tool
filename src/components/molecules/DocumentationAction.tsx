@@ -5,7 +5,7 @@ import { DownloadIcon, EyeIcon } from "lucide-react";
 import api from "@/api";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useState } from "react";
+import * as React from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../atoms/dialog";
 
 const documentCategoryContent: Record<DocumentCategoryEnum, {
@@ -33,8 +33,8 @@ const documentCategoryContent: Record<DocumentCategoryEnum, {
 export function DocumentationAction({ documentCategory, sessionId }: { documentCategory: DocumentCategoryEnum, sessionId: string | null }) {
     const { t } = useTranslation();
     const { smallTitle, bigTitle, description } = documentCategoryContent[documentCategory];
-    const [previewData, setPreviewData] = useState<string[][]>([]);
-    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+    const [previewData, setPreviewData] = React.useState<string[][]>([]);
+    const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
 
     const downloadDocumentation = async () => {
         const result = await api.get(

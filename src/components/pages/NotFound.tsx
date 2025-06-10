@@ -1,6 +1,7 @@
 import { BasicLayout } from "../templates";
+import React from "react";
 
-export function NotFound() {
+export function NotFound(): React.JSX.Element {
     return (
         <BasicLayout>
             <div className="flex flex-col items-center justify-center h-[50vh]">

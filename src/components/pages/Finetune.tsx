@@ -7,7 +7,7 @@ import { DocumentationAction } from "../molecules/DocumentationAction";
 import { DocumentCategoryEnum } from "@/types";
 import { Button } from "../atoms/button";
 import { Loader } from "../atoms/Loader";
-import { useEffect } from "react";
+import React from "react";
 import { useNavigate, useParams } from "react-router";
 import api from "@/api";
 import { useQuery } from "@tanstack/react-query";
@@ -73,7 +73,7 @@ export function Finetune() {
         }
     };
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (isSuccess && data) {
             setDocumentation(data);
         }

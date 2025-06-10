@@ -4,6 +4,7 @@ import { CountriesProvider } from "./context/CountriesProvider";
 import { Toaster } from "sonner";
 import { BrowserRouter, Route, Routes } from "react-router";
 import { Areas } from "./components/pages/Areas";
+import React from "react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -13,9 +14,9 @@ const queryClient = new QueryClient({
   },
 });
 
-function App() {
+function App(): React.JSX.Element {
   return (
-    <BrowserRouter basename="/waterpath-data-integration-tool/">
+    <BrowserRouter basename="/model/">
       <QueryClientProvider client={queryClient}>
         <CountriesProvider>
           <Routes>

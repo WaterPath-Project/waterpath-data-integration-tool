@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { useDITStore } from "@/store/DITStore";
 import { levelEnumToNumber } from "@/tools/utils";
 import { AdminstrativeLevelEnum, AreaOptionEnum } from "@/types";
-import { useEffect, useMemo } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 export function AdminstrativeLevelRadio() {
@@ -11,14 +11,14 @@ export function AdminstrativeLevelRadio() {
   const { adminLevel, countries, setAdminLevel, setArea } = useDITStore();
 
   // Memoize minLevel
-  const minLevel = useMemo(() => {
+  const minLevel = React.useMemo(() => {
     return countries.reduce((min, country) => {
       return Math.min(min, country.MAX_LEVEL);
     }, 5);
   }, [countries]);
 
   // Memoize spans
-  const spans = useMemo(() => {
+  const spans = React.useMemo(() => {
     const result = [];
 
     const splitLabel = (label: string) => {
@@ -52,7 +52,7 @@ export function AdminstrativeLevelRadio() {
     return result;
   }, [countries, minLevel]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (minLevel === 0) {
       setArea(AreaOptionEnum.EntireCountries);
       setAdminLevel(AdminstrativeLevelEnum.Level0);

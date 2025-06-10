@@ -14,16 +14,16 @@ import classNames from "classnames";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { Loader } from "../atoms/Loader";
-import { useEffect, useState } from "react";
+import React from "react";
 import { v4 as uuidv4 } from 'uuid';
 
 export function CustomizeModel() {
   const { t } = useTranslation();
   const { countries, area, setDocumentation, reset, resetAreaNDocumentation, setSessionId } = useDITStore();
   const navigate = useNavigate()
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = React.useState(false);
 
-  useEffect(() => { resetAreaNDocumentation() }, [])
+  React.useEffect(() => { resetAreaNDocumentation() }, [])
 
   const handleClick = async () => {
     if (area === AreaOptionEnum.SpecificAreas) {

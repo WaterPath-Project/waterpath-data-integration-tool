@@ -1,15 +1,16 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "../atoms/button";
 import { DownloadIcon, BookTextIcon } from "lucide-react";
+import React from "react";
 
-export function GloWPaVersion() {
+export function GloWPaVersion(): React.ReactElement {
   const { t } = useTranslation();
 
   const handleClick = () => {
     window.open("https://git.wur.nl/glowpa/glowpa-r/-/archive/main/glowpa-r-main.zip", "_blank");
   }
 
-  
+
   const handleDocClick = () => {
     window.open('https://waterpath-toolkit.org/docs/modelling-guidelines', '_blank');
   }
@@ -26,20 +27,20 @@ export function GloWPaVersion() {
           </span>
         </div>
         <div className="flex flex-col">
-        <Button
-          onClick={handleClick}
-          variant={"primary"}
-          className="rounded-[8px] font-inter font-bold text-xs w-64 flex  gap-2 items-center"
-        >
-          <DownloadIcon />{t("glowpa.download")}
-        </Button>
-        <Button
-          onClick={handleDocClick}
-          variant={"secondary"}
-          className="rounded-[8px] font-inter font-bold text-xs w-64 flex  gap-2 items-center mt-3"
-        >
-          <BookTextIcon />{t("glowpa.documentation")}
-        </Button>
+          <Button
+            onClick={handleClick}
+            variant={"primary"}
+            className="rounded-[8px] font-inter font-bold text-xs w-64 flex  gap-2 items-center"
+          >
+            <DownloadIcon />{t("glowpa.download")}
+          </Button>
+          <Button
+            onClick={handleDocClick}
+            variant={"secondary"}
+            className="rounded-[8px] font-inter font-bold text-xs w-64 flex  gap-2 items-center mt-3"
+          >
+            <BookTextIcon />{t("glowpa.documentation")}
+          </Button>
         </div>
       </div>
     </div>

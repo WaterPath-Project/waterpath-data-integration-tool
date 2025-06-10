@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { MultiSelect } from "../atoms/multiselect";
-import { useEffect, useState } from "react";
+import React from "react";
 import * as Flags from "country-flag-icons/react/3x2";
 import { useCountries } from "@/context/CountriesProvider";
 import { GADMCountries, Option } from "@/types";
@@ -23,10 +23,10 @@ export function CountriesOfInterestMultiSelect() {
   const { t } = useTranslation();
   const { countries } = useCountries();
   const { countries: contextCountries } = useDITStore();
-  const [selectedCountries, setSelectedCountries] = useState<string[]>(contextCountries.map((c) => c.ALPHA_2));
+  const [selectedCountries, setSelectedCountries] = React.useState<string[]>(contextCountries.map((c) => c.ALPHA_2));
 
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (countries) {
       const stateCountries: GADMCountries[] = countries.filter((c) =>
         selectedCountries.includes(c.ALPHA_2)

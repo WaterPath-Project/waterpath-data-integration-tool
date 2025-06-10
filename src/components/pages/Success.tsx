@@ -8,8 +8,9 @@ import api from "@/api";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader } from "../atoms/Loader";
+import React from "react";
 
-export function Success() {
+export function Success(): React.ReactElement {
     const { session_id } = useParams();
     const { t } = useTranslation();
 

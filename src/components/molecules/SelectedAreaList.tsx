@@ -3,6 +3,7 @@ import { Button } from "@/components/atoms/button";
 import { useDITStore } from "@/store/DITStore";
 import { GADMAreas } from "@/types";
 import { useTranslation } from "react-i18next";
+import React from "react";
 
 interface SelectedAreaListProps {
     level: number;
@@ -45,7 +46,7 @@ export const SelectedAreaList: React.FC<SelectedAreaListProps> = ({ level }) => 
                     <span className="text-gray-800">{area?.namePath}</span>
                     <Button
                         className="flex border-0 items-center gap-2 font-inter font-semibold text-xs"
-                        
+
                         onClick={() => removeSelectedArea(area?.gid ?? "")}
                     >
                         remove

@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
 import { Checkbox } from "../atoms/checkbox";
 import { useDITStore } from "@/store/DITStore";
+import React from "react";
 
-export function SimulateCheckbox() {
+export function SimulateCheckbox(): React.ReactElement {
   const { t } = useTranslation();
   const {
     hasHumanEmissions,

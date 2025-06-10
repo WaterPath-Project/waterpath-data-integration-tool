@@ -1,6 +1,5 @@
 import { Button } from "../atoms/button";
-import { useRef, useState } from "react";
-
+import React from "react";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { Card } from "../atoms/card";
@@ -17,10 +16,10 @@ import { v4 as uuidv4 } from 'uuid';
 export function AreaSelector() {
     const { t } = useTranslation();
     const { downLoadedAreas, adminLevel, selectedAreas, addSelectedArea, setDocumentation, setSessionId, reset } = useDITStore();
-    const dropdownRef = useRef<DynamicDropdownsRef>(null);
+    const dropdownRef = React.useRef<DynamicDropdownsRef>(null);
     const navigate = useNavigate()
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = React.useState(false);
 
     const handleSubmit = async () => {
         const newSessionId = uuidv4();

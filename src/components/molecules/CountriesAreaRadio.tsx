@@ -1,8 +1,8 @@
+import React from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/atoms/radio-group";
 import { cn } from "@/lib/utils";
 import { useDITStore } from "@/store/DITStore";
 import { AreaOptionEnum } from "@/types";
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 export function CountriesAreaRadio() {
@@ -10,7 +10,7 @@ export function CountriesAreaRadio() {
   const { area, countries, setArea } = useDITStore();
 
   // Memoize minLevel
-  const minLevel = useMemo(() => {
+  const minLevel = React.useMemo(() => {
     return countries.reduce((min, country) => {
       return Math.min(min, country.MAX_LEVEL);
     }, 5);

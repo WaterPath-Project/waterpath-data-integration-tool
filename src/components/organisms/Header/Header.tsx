@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { HeaderLogo } from "./HeaderLogo";
+import React from "react";
 
 /**
  * A React functional component that renders the header section of the application.
@@ -7,7 +8,7 @@ import { HeaderLogo } from "./HeaderLogo";
  * @function Header
  * @returns {JSX.Element} The header layout with a translated title, subtitle, and logo.
  */
-export function Header() {
+export function Header(): React.ReactElement {
   const { t } = useTranslation();
   return (
     <div className="flex flex-col-reverse items-start md:flex-row md:justify-between md:items-end mb-16 mx-4 ">

@@ -1,6 +1,6 @@
-import { FC, SVGProps } from "react";
+import React from "react";
 
-export const HeaderLogo: FC<SVGProps<SVGSVGElement>> = ({ ...props }) => {
+export const HeaderLogo: React.FC<React.SVGProps<SVGSVGElement>> = ({ ...props }) => {
   return (
     <svg
       width="316"

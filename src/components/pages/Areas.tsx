@@ -5,7 +5,7 @@ import { BasicLayout } from "../templates";
 import { useDITStore } from "@/store/DITStore";
 import { levelEnumToNumber } from "@/tools/utils";
 import api from "@/api";
-import { useEffect } from "react";
+import React from "react";
 import { GADMAreas } from "@/types";
 import { Loader } from "../atoms/Loader";
 import { useTranslation, } from "react-i18next";
@@ -19,7 +19,7 @@ export function Areas() {
     // Redirect to home if no countries are available
     const navigate = useNavigate();
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (countries.length === 0) {
             navigate("/");
         }
@@ -50,7 +50,7 @@ export function Areas() {
 
     const allFetched = areasByCountryQueries.every(q => q.isSuccess);
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (allFetched) {
             const combinedData: GADMAreas[] = areasByCountryQueries
                 .map(q => q.data) // array of GADMAreas[]

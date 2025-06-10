@@ -5,7 +5,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react()],
   assetsInclude: ["**/*.riv"],
-  base: "/waterpath-data-integration-tool/",
+  base: "/model/",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

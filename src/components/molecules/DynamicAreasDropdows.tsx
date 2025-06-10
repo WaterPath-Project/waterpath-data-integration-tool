@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import React from "react";
 import { GADMAreas } from '@/types';
 import {
     Select,
@@ -21,12 +21,12 @@ export interface DynamicDropdownsRef {
     reset: () => void;
 }
 
-export const DynamicDropdowns = forwardRef<DynamicDropdownsRef, Props>(
+export const DynamicDropdowns = React.forwardRef<DynamicDropdownsRef, Props>(
 
 
     ({ areas, maxLevel, onFinalSelect }, ref) => {
         const { t } = useTranslation();
-        const [selectedGIDs, setSelectedGIDs] = useState<string[]>([]);
+        const [selectedGIDs, setSelectedGIDs] = React.useState<string[]>([]);
 
         const handleChange = (level: number, gid: string) => {
             const updated = [...selectedGIDs.slice(0, level), gid];
@@ -45,7 +45,7 @@ export const DynamicDropdowns = forwardRef<DynamicDropdownsRef, Props>(
             }
         };
 
-        useImperativeHandle(ref, () => ({
+        React.useImperativeHandle(ref, () => ({
             reset: () => {
                 setSelectedGIDs(prev => {
                     if (prev.length === 0) return [];

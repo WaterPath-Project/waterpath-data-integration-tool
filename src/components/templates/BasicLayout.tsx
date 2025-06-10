@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import React from "react";
 import { Header } from "../organisms";
 import { PageContainer } from "../atoms";
 
@@ -8,7 +8,7 @@ import { PageContainer } from "../atoms";
  * @param {React.ReactNode} children - The content to be displayed within the layout, typically the main page content.
  * @returns {JSX.Element} The rendered layout containing a header and child content inside a styled container.
  */
-export function BasicLayout({ children }: Readonly<PropsWithChildren>) {
+export function BasicLayout({ children }: Readonly<React.PropsWithChildren>) {
   return (
     <PageContainer>
       <Header />
