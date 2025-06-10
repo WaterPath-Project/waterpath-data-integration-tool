@@ -1,6 +1,6 @@
 import RiveComponent from "@rive-app/react-canvas";
 import loaderRiv from "@/components/assets/animations/loader.riv";
-import * as React from "react"
+import React from "react";
 
 /**
  * A full-screen overlay loader component that displays a semi-transparent background

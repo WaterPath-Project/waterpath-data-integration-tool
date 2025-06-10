@@ -5,7 +5,7 @@ import { DownloadIcon, EyeIcon } from "lucide-react";
 import api from "@/api";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import * as React from "react";
+import React from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../atoms/dialog";
 
 const documentCategoryContent: Record<DocumentCategoryEnum, {

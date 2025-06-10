@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 /**
  * A React functional component that provides a styled container for page content.
