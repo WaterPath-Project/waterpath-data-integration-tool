@@ -16,7 +16,7 @@ const queryClient = new QueryClient({
 
 function App(): React.JSX.Element {
   return (
-    <BrowserRouter basename="/model/">
+    <BrowserRouter basename="/waterpath-data-integration-tool/">
       <QueryClientProvider client={queryClient}>
         <CountriesProvider>
           <Routes>
