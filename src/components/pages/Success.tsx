@@ -48,6 +48,12 @@ export function Success(): React.ReactElement {
         }
     };
 
+    React.useEffect(() => {
+        if (isFetching) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }, [isFetching]);
+
     const handleDocClick = () => {
         window.open('https://waterpath-toolkit.org/docs/modelling-guidelines', '_blank');
     }

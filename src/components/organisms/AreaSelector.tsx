@@ -63,6 +63,12 @@ export function AreaSelector() {
         dropdownRef.current?.reset();
     };
 
+    React.useEffect(() => {
+        if (loading) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }, [loading]);
+
 
     return (
         <>

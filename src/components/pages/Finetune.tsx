@@ -74,6 +74,12 @@ export function Finetune() {
     };
 
     React.useEffect(() => {
+        if (isActive) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }, [isActive]);
+
+    React.useEffect(() => {
         if (isSuccess && data) {
             setDocumentation(data);
         }
