@@ -7,7 +7,7 @@ export function GloWPaVersion(): React.ReactElement {
   const { t } = useTranslation();
 
   const handleClick = () => {
-    window.open("https://git.wur.nl/glowpa/glowpa-r/-/archive/main/glowpa-r-main.zip", "_blank");
+    window.open("https://git.wur.nl/glowpa/glowpa-r", "_blank");
   }
 
 
