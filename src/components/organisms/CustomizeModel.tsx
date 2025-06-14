@@ -25,7 +25,9 @@ export function CustomizeModel() {
 
   React.useEffect(() => { resetAreaNDocumentation() }, [])
 
-  const handleClick = async () => {
+  const handleClick = async (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.(); 
     if (area === AreaOptionEnum.SpecificAreas) {
       navigate("/areas");
       return;
@@ -98,6 +100,7 @@ export function CustomizeModel() {
         <div className="border border-wpBlue-500 my-4"></div>
         <Button
           disabled={countries.length === 0 || loading}
+          type="button"
           onClick={handleClick}
           variant={"secondary"}
           className="rounded-[8px] font-inter font-bold text-xs w-64"
