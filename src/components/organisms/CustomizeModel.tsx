@@ -25,7 +25,7 @@ export function CustomizeModel() {
 
   React.useEffect(() => { resetAreaNDocumentation() }, [])
 
-  const handleClick = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleClick = async (e: any) => {
     e?.preventDefault?.();
     e?.stopPropagation?.(); 
     if (area === AreaOptionEnum.SpecificAreas) {
