@@ -55,7 +55,7 @@ export function Success(): React.ReactElement {
     }, [isFetching]);
 
     const handleDocClick = () => {
-        window.open('https://waterpath-toolkit.org/docs/modelling-guidelines', '_blank');
+        window.open('https://waterpath-toolkit.org/docs/docs/example-dataset/', '_blank');
     }
 
     return (
