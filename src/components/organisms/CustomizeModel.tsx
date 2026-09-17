@@ -19,7 +19,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export function CustomizeModel() {
   const { t } = useTranslation();
-  const { countries, area, setDocumentation, reset, resetAreaNDocumentation, setSessionId } = useDITStore();
+  const { countries, area, setDocumentation, reset, resetAreaNDocumentation, setSessionId, hasLivestockEmissions, hasConcentrations, hasRisks } = useDITStore();
   const navigate = useNavigate()
   const [loading, setLoading] = React.useState(false);
 
@@ -40,7 +40,7 @@ export function CustomizeModel() {
     try {
       await api.post(`https://dev.waterpath.venthic.com/api/session/create/?session_id=${newSessionId}`);
       const result = await api.post(
-        `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${newSessionId}&gids=${countries.map(country => country.GID_0).join(",")}`
+        `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${newSessionId}&gids=${countries.map(country => country.GID_0).join(",")}&include_livestock=${hasLivestockEmissions}&include_hydrology=${hasConcentrations}&include_qmra=${hasRisks}`
       );
 
       setDocumentation(result.data.resources);

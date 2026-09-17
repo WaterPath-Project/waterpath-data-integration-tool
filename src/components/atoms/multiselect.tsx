@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Separator } from "@/components/atoms/separator";
 import { Button } from "@/components/atoms/button";
 import { Badge } from "@/components/atoms/badge";
+import { Chip } from "@/components/atoms/chip";
 import {
   Popover,
   PopoverContent,
@@ -186,27 +187,15 @@ export const MultiSelect = React.forwardRef<
                 <div className="flex flex-wrap items-center">
                   {selectedValues.slice(0, maxCount).map((value) => {
                     const option = options.find((o) => o.value === value);
-                    const IconComponent = option?.icon;
                     return (
-                      <Badge
+                      <Chip
                         key={value}
-                        className={cn(
-                          multiSelectVariants({ variant }),
-                          "bg-wpBlue-100 text-wpBlue mr-1 hover:bg-wpBlue-100/40 font-inter font-bold text-sm"
-                        )}
+                        icon={option?.icon}
+                        className={cn(multiSelectVariants({ variant }), "mr-1")}
+                        onRemove={() => toggleOption(value)}
                       >
-                        {IconComponent && (
-                          <IconComponent className="h-6 w-6 mr-2" />
-                        )}
                         {option?.label}
-                        <XCircle
-                          className="ml-2 h-4 w-4 cursor-pointer"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            toggleOption(value);
-                          }}
-                        />
-                      </Badge>
+                      </Chip>
                     );
                   })}
                   {selectedValues.length > maxCount && (

@@ -109,7 +109,7 @@ export const useDITStore = create<DITState>((set) => ({
       countries: [],
       area: AreaOptionEnum.EntireCountries,
       adminLevel: AdminstrativeLevelEnum.Level1,
-      hasHumanEmissions: false,
+      hasHumanEmissions: true,
       hasLivestockEmissions: false,
       hasConcentrations: false,
       hasRisks: false,

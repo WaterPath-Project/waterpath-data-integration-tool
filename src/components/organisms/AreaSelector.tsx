@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export function AreaSelector() {
     const { t } = useTranslation();
-    const { downLoadedAreas, adminLevel, selectedAreas, addSelectedArea, setDocumentation, setSessionId, reset } = useDITStore();
+    const { downLoadedAreas, adminLevel, selectedAreas, addSelectedArea, setDocumentation, setSessionId, reset, hasLivestockEmissions, hasConcentrations, hasRisks } = useDITStore();
     const dropdownRef = React.useRef<DynamicDropdownsRef>(null);
     const navigate = useNavigate()
 
@@ -29,7 +29,7 @@ export function AreaSelector() {
         try {
             await api.post(`https://dev.waterpath.venthic.com/api/session/create/?session_id=${newSessionId}`);
             const result = await api.post(
-                `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${newSessionId}&gids=${selectedAreas.join(",")}`
+                `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${newSessionId}&gids=${selectedAreas.join(",")}&include_livestock=${hasLivestockEmissions}&include_hydrology=${hasConcentrations}&include_qmra=${hasRisks}`
             );
 
             setDocumentation(result.data.resources);
@@ -83,9 +83,6 @@ export function AreaSelector() {
                     <DynamicDropdowns ref={dropdownRef} areas={downLoadedAreas} maxLevel={levelEnumToNumber(adminLevel) + 1} onFinalSelect={handleAddNewArea} />
                 </Card>
                 <div className="border border-wpBlue-500"></div>
-                <span className="font-outfit font-extrabold text-[2rem] text-wpBlue">
-                    {t("areaSelector.selectedAreasTitle")}
-                </span>
                 <SelectedAreaList level={levelEnumToNumber(adminLevel)} />
                 <Button
                     onClick={handleSubmit}

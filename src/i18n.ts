@@ -77,6 +77,8 @@ i18n
             addButton: "Add new area",
             title: "Select specific areas",
             selectedAreasTitle: "Selected areas",
+            expandAll: "Expand all",
+            collapseAll: "Collapse all",
             noSelectedAreas: "No areas selected!",
             alreadyExists: "Area already selected",
             alreadyExistsDescription: "You've already selected this area.",
