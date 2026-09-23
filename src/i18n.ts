@@ -84,7 +84,14 @@ i18n
             alreadyExistsDescription: "You've already selected this area.",
             dropdown: {
               selectAll: "Select all",
-            }
+            },
+            miller: {
+              level: "Level {{level}}",
+              country: "Country",
+              search: "Search...",
+              noMatches: "No areas match your search",
+              pickParent: "Select an item in the previous column",
+            },
           },
           finetune: {
             title: "Human emissions",

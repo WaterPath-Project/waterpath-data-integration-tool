@@ -1,9 +1,14 @@
 import React from "react";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
+import { Minus } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { CustomCheck } from "../assets/customIcons/CustomCheck";
 
+/**
+ * Tri-state checkbox. Pass `checked={true | false | "indeterminate"}`;
+ * the indeterminate state renders a dash instead of a check mark.
+ */
 const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>
@@ -11,7 +16,7 @@ const Checkbox = React.forwardRef<
   <CheckboxPrimitive.Root
     ref={ref}
     className={cn(
-      "peer h-4 w-4 shrink-0 rounded-[4px] border bg-wpWhite border-wpBrown-100 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-none data-[state=checked]:bg-wpGreen-900 data-[state=checked]:text-wpBlue dark:border-neutral-50 dark:ring-offset-neutral-950 dark:focus-visible:ring-neutral-300 dark:data-[state=checked]:bg-neutral-50 dark:data-[state=checked]:text-neutral-900",
+      "peer h-4 w-4 shrink-0 rounded-[4px] border bg-wpWhite border-wpBrown-100 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-none data-[state=checked]:bg-wpGreen-900 data-[state=checked]:text-wpBlue data-[state=indeterminate]:border-none data-[state=indeterminate]:bg-wpGreen-900 data-[state=indeterminate]:text-wpBlue dark:border-neutral-50 dark:ring-offset-neutral-950 dark:focus-visible:ring-neutral-300 dark:data-[state=checked]:bg-neutral-50 dark:data-[state=checked]:text-neutral-900",
       className
     )}
     {...props}
@@ -19,7 +24,11 @@ const Checkbox = React.forwardRef<
     <CheckboxPrimitive.Indicator
       className={cn("flex items-center justify-center text-current font-bold")}
     >
-      <CustomCheck />
+      {props.checked === "indeterminate" ? (
+        <Minus className="h-3 w-3 text-wpBlue" strokeWidth={3} />
+      ) : (
+        <CustomCheck />
+      )}
     </CheckboxPrimitive.Indicator>
   </CheckboxPrimitive.Root>
 ));

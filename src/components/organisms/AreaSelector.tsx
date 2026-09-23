@@ -3,9 +3,11 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { Card } from "../atoms/card";
-import { DynamicDropdowns, DynamicDropdownsRef } from "../molecules/DynamicAreasDropdows";
+// Previous solution (cascading dropdowns) kept for reference:
+// import { DynamicDropdowns, DynamicDropdownsRef } from "../molecules/DynamicAreasDropdows";
+import { MillerColumns } from "../molecules/MillerColumns";
 import { useDITStore } from "@/store/DITStore";
-import { levelEnumToNumber } from "@/tools/utils";
+import { getAdminLevelLabels, levelEnumToNumber } from "@/tools/utils";
 import api from "@/api";
 import { SelectedAreaList } from "../molecules/SelectedAreaList";
 import { toast } from "sonner";
@@ -15,8 +17,17 @@ import { v4 as uuidv4 } from 'uuid';
 
 export function AreaSelector() {
     const { t } = useTranslation();
-    const { downLoadedAreas, adminLevel, selectedAreas, addSelectedArea, setDocumentation, setSessionId, reset, hasLivestockEmissions, hasConcentrations, hasRisks } = useDITStore();
-    const dropdownRef = React.useRef<DynamicDropdownsRef>(null);
+    const { downLoadedAreas, adminLevel, countries, selectedAreas, setSelectedAreas, setDocumentation, setSessionId, reset, hasLivestockEmissions, hasConcentrations, hasRisks } = useDITStore();
+
+    // "Level 0 (Country)", "Level 1 (Region, Province)", ... built from the selected countries' admin labels.
+    const levelLabels = React.useMemo(() => {
+        const labels = getAdminLevelLabels(countries);
+        labels[0] = t("areaSelector.miller.country");
+        return labels;
+    }, [countries, t]);
+    // Previous solution (cascading dropdowns):
+    // const { addSelectedArea } = useDITStore();
+    // const dropdownRef = React.useRef<DynamicDropdownsRef>(null);
     const navigate = useNavigate()
 
     const [loading, setLoading] = React.useState(false);
@@ -44,24 +55,24 @@ export function AreaSelector() {
         }
     };
 
-    // Function to handle adding a new area
-    const handleAddNewArea = (value: string | string[]) => {
-        if (!value) return;
-
-        const values = Array.isArray(value) ? value : [value];
-
-        for (const selection of values) {
-            if (selectedAreas.includes(selection)) {
-                toast.warning(t("areaSelector.alreadyExists"), {
-                    description: t("areaSelector.alreadyExistsDescription"),
-                });
-                continue;
-            }
-            addSelectedArea(selection);
-        }
-
-        dropdownRef.current?.reset();
-    };
+    // Previous solution (cascading dropdowns): add areas one at a time from the last dropdown.
+    // const handleAddNewArea = (value: string | string[]) => {
+    //     if (!value) return;
+    //
+    //     const values = Array.isArray(value) ? value : [value];
+    //
+    //     for (const selection of values) {
+    //         if (selectedAreas.includes(selection)) {
+    //             toast.warning(t("areaSelector.alreadyExists"), {
+    //                 description: t("areaSelector.alreadyExistsDescription"),
+    //             });
+    //             continue;
+    //         }
+    //         addSelectedArea(selection);
+    //     }
+    //
+    //     dropdownRef.current?.reset();
+    // };
 
     React.useEffect(() => {
         if (loading) {
@@ -80,7 +91,16 @@ export function AreaSelector() {
                     {t("areaSelector.title")}
                 </span>
                 <Card className="flex flex-row gap-4 items-center justify-between bg-white p-4 rounded-[8px]">
+                    {/* Previous solution (cascading dropdowns):
                     <DynamicDropdowns ref={dropdownRef} areas={downLoadedAreas} maxLevel={levelEnumToNumber(adminLevel) + 1} onFinalSelect={handleAddNewArea} />
+                    */}
+                    <MillerColumns
+                        areas={downLoadedAreas}
+                        leafLevel={levelEnumToNumber(adminLevel)}
+                        selected={selectedAreas}
+                        onChange={setSelectedAreas}
+                        levelLabels={levelLabels}
+                    />
                 </Card>
                 <div className="border border-wpBlue-500"></div>
                 <SelectedAreaList level={levelEnumToNumber(adminLevel)} />

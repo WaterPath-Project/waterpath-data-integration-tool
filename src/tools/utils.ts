@@ -1,4 +1,39 @@
-import { AdminstrativeLevelEnum, GADMAreas } from "@/types";
+import { AdminstrativeLevelEnum, GADMAreas, GADMCountries } from "@/types";
+
+/**
+ * Formats a raw GADM admin label (e.g. "Region|Province" or "AutonomousCommunity/Region")
+ * into a short human readable form: at most two parts joined by "/", camel case split into words.
+ *
+ * @example
+ * formatAdminLabel("AutonomousCommunity|Region"); // "Autonomous Community/Region"
+ */
+export function formatAdminLabel(label: string): string {
+    return label
+        .split(/[|/]/)
+        .slice(0, 2)
+        .map((part) => part.replace(/([a-z])([A-Z])/g, "$1 $2").trim())
+        .join("/");
+}
+
+/**
+ * Returns, for each administrative level, the unique formatted admin labels across the given countries.
+ * Index 0 is left empty (the country itself); index i (i >= 1) holds the labels for Level i, e.g. "Region, Province".
+ *
+ * @example
+ * getAdminLevelLabels(countries); // ["", "Region", "Province, Department", ...]
+ */
+export function getAdminLevelLabels(countries: GADMCountries[]): string[] {
+    const maxLen = countries.reduce((max, c) => Math.max(max, c.ADMIN_LABELS?.length ?? 0), 0);
+    const result: string[] = [""];
+    for (let i = 0; i < maxLen; i++) {
+        const labels = countries
+            .map((c) => c.ADMIN_LABELS?.[i])
+            .filter((label): label is string => Boolean(label) && label !== "NA")
+            .map(formatAdminLabel);
+        result.push(Array.from(new Set(labels)).join(", "));
+    }
+    return result;
+}
 
 /**
  * Converts an AdminstrativeLevelEnum value (e.g., "Level3") to its corresponding numeric level (e.g., 3).

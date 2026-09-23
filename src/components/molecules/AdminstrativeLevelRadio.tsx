@@ -1,7 +1,7 @@
 import { RadioGroup, RadioGroupItem } from "@/components/atoms/radio-group";
 import { cn } from "@/lib/utils";
 import { useDITStore } from "@/store/DITStore";
-import { levelEnumToNumber } from "@/tools/utils";
+import { formatAdminLabel, levelEnumToNumber } from "@/tools/utils";
 import { AdminstrativeLevelEnum, AreaOptionEnum } from "@/types";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -21,20 +21,12 @@ export function AdminstrativeLevelRadio() {
   const spans = React.useMemo(() => {
     const result = [];
 
-    const splitLabel = (label: string) => {
-      // Split by pipe or slash
-      const parts = label.split(/[|/]/).slice(0, 2);
-      return parts
-        .map((part) => part.replace(/([a-z])([A-Z])/g, "$1 $2").trim())
-        .join("/");
-    };
-
     for (let i = 0; i < minLevel; i++) {
       const rawLabels = countries
         .map((c) => c.ADMIN_LABELS[i])
         .filter((label) => label && label !== "NA");
 
-      const formattedLabels = rawLabels.map(splitLabel);
+      const formattedLabels = rawLabels.map(formatAdminLabel);
 
       // Deduplicate
       const uniqueLabels = Array.from(new Set(formattedLabels));

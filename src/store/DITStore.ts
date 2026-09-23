@@ -24,6 +24,7 @@ type DITState = {
   selectedAreas: string[];
   addSelectedArea: (area: string) => void;
   removeSelectedArea: (area: string) => void;
+  setSelectedAreas: (areas: string[]) => void;
   documentation: Documentation[];
   setDocumentation: (documetation: Documentation[]) => void;
   reset: () => void;
@@ -93,6 +94,7 @@ export const useDITStore = create<DITState>((set) => ({
     set((state) => ({
       selectedAreas: state.selectedAreas.filter((a) => a !== area),
     })),
+  setSelectedAreas: (areas: string[]) => set({ selectedAreas: areas }),
 
   /*
   *   State Management of documentation
