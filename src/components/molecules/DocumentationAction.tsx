@@ -1,4 +1,3 @@
-import { DocumentCategoryEnum } from "@/types";
 import { useTranslation } from "react-i18next";
 import { Button } from "../atoms/button";
 import { DownloadIcon, EyeIcon } from "lucide-react";
@@ -7,44 +6,31 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import React from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../atoms/dialog";
+import { categoryIcons } from "@/components/assets/categoryIcons";
+import { DataSubcategory } from "@/lib/dataCategories";
 
-const documentCategoryContent: Record<DocumentCategoryEnum, {
-    smallTitle: string;
-    bigTitle: string;
-    description: string;
-}> = {
-    [DocumentCategoryEnum.Sanitation]: {
-        smallTitle: "documentation.sanitation.smallTitle",
-        bigTitle: "documentation.sanitation.bigTitle",
-        description: "documentation.sanitation.description",
-    },
-    [DocumentCategoryEnum.Population]: {
-        smallTitle: "documentation.population.smallTitle",
-        bigTitle: "documentation.population.bigTitle",
-        description: "documentation.population.description",
-    },
-    [DocumentCategoryEnum.Treatment]: {
-        smallTitle: "documentation.treatment.smallTitle",
-        bigTitle: "documentation.treatment.bigTitle",
-        description: "documentation.treatment.description",
-    },
+type DocumentationActionProps = {
+    subcategory: DataSubcategory;
+    sessionId: string | null;
+    /** `file_id` for the download API, or `null` while the file is not available. */
+    fileId: string | null;
 };
 
-export function DocumentationAction({ documentCategory, sessionId }: { documentCategory: DocumentCategoryEnum, sessionId: string | null }) {
+export function DocumentationAction({ subcategory, sessionId, fileId }: DocumentationActionProps) {
     const { t } = useTranslation();
-    const { smallTitle, bigTitle, description } = documentCategoryContent[documentCategory];
     const [previewData, setPreviewData] = React.useState<string[][]>([]);
     const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
+    const isAvailable = fileId !== null && sessionId !== null;
 
     const downloadDocumentation = async () => {
         const result = await api.get(
-            `https://dev.waterpath.venthic.com/api/data/input/download?session_id=${sessionId}&file_id=${documentCategory}`,
+            `https://dev.waterpath.venthic.com/api/data/input/download?session_id=${sessionId}&file_id=${fileId}`,
         );
         return result.data;
     };
 
     const { isFetching, refetch } = useQuery({
-        queryKey: ["downloadDocumentation", documentCategory],
+        queryKey: ["downloadDocumentation", sessionId, fileId],
         queryFn: downloadDocumentation,
         enabled: false,
     });
@@ -59,7 +45,7 @@ export function DocumentationAction({ documentCategory, sessionId }: { documentC
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${documentCategory}.csv`;
+            a.download = `${fileId}.csv`;
             document.body.appendChild(a);
             a.click();
             a.remove();
@@ -76,49 +62,58 @@ export function DocumentationAction({ documentCategory, sessionId }: { documentC
             const parsed = csvString
                 .split('\n')
                 .map(row => row.split(',').map(cell => cell.trim()))
-                .filter(row => row.some(cell => cell !== ''));;
+                .filter(row => row.some(cell => cell !== ''));
             setPreviewData(parsed);
             setIsPreviewOpen(true);
         }
     };
 
-
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2 ">
-                <span className="font-inter font-semibold text-sm text-wpBlue">
-                    {t(smallTitle)}
-                </span>
-                <span className="font-inter font-semibold text-2xl text-wpBlue">
-                    {t(bigTitle)}
-                </span>
+            <div className="flex flex-col gap-2">
+                <div className="flex flex-row items-center gap-3">
+                    <img
+                        src={categoryIcons[subcategory.icon]}
+                        alt=""
+                        aria-hidden="true"
+                        className="h-10 w-10 shrink-0"
+                    />
+                    <span className="font-inter font-semibold text-2xl text-wpBlue">
+                        {t(`dataCategories.${subcategory.machineName}.title`)}
+                    </span>
+                </div>
                 <span className="font-inter text-xs text-wpBlue">
-                    {t(description)}
+                    {t(`dataCategories.${subcategory.machineName}.description`)}
                 </span>
             </div>
-            <div className="flex flex-row gap-2 ">
+            <div className="flex flex-row flex-wrap gap-2 items-center">
                 <Button
-                    disabled={isFetching}
+                    disabled={!isAvailable || isFetching}
                     onClick={handleDownload}
-                    className="rounded-[16px] font-inter font-bold text-xs  flex  gap-2 items-center"
+                    className="rounded-[16px] font-inter font-bold text-xs flex gap-2 items-center"
                 >
                     <DownloadIcon />{t("finetune.downloadButton")}
                 </Button>
                 <Button
-                    disabled={isFetching}
+                    disabled={!isAvailable || isFetching}
                     variant="secondary"
                     onClick={handlePreview}
                     className="rounded-[16px] font-inter font-bold text-xs flex gap-2 items-center"
                 >
                     <EyeIcon /> {t("finetune.previewButton")}
                 </Button>
+                {!isAvailable && (
+                    <span className="font-inter text-xs italic text-wpBlue-300">
+                        {t("finetune.notAvailable")}
+                    </span>
+                )}
             </div>
 
             {/* Modal for CSV Preview */}
             <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
                 <DialogContent className="font-outfit text-wpBlue max-w-5xl max-h-[80vh] overflow-y-auto ">
                     <DialogHeader>
-                        <DialogTitle className="font-semibold text-2xl">{t("finetune.previewTitle") + ` - ${documentCategory}.csv`}</DialogTitle>
+                        <DialogTitle className="font-semibold text-2xl">{t("finetune.previewTitle") + ` - ${fileId}.csv`}</DialogTitle>
                         <DialogDescription>
                             {t("finetune.previewDescription")}
                         </DialogDescription>
@@ -152,6 +147,5 @@ export function DocumentationAction({ documentCategory, sessionId }: { documentC
                 </DialogContent>
             </Dialog>
         </div>
-
     );
 }

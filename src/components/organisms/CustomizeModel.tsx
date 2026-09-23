@@ -16,10 +16,11 @@ import { useNavigate } from "react-router";
 import { Loader } from "../atoms/Loader";
 import React from "react";
 import { v4 as uuidv4 } from 'uuid';
+import { getIncludedCategories } from "@/lib/dataCategories";
 
 export function CustomizeModel() {
   const { t } = useTranslation();
-  const { countries, area, setDocumentation, reset, resetAreaNDocumentation, setSessionId, hasLivestockEmissions, hasConcentrations, hasRisks } = useDITStore();
+  const { countries, area, setDocumentation, setIncludedCategories, reset, resetAreaNDocumentation, setSessionId, hasHumanEmissions, hasLivestockEmissions, hasConcentrations, hasRisks } = useDITStore();
   const navigate = useNavigate()
   const [loading, setLoading] = React.useState(false);
 
@@ -44,6 +45,7 @@ export function CustomizeModel() {
       );
 
       setDocumentation(result.data.resources);
+      setIncludedCategories(getIncludedCategories({ hasHumanEmissions, hasLivestockEmissions, hasConcentrations, hasRisks }));
       reset();
       toast.success(t("customizeModel.successMessage"));
       navigate(`/finetune/${newSessionId}`);

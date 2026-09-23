@@ -1,10 +1,9 @@
 import { BasicLayout } from "../templates";
 import { useTranslation } from "react-i18next";
 import DynamicBreadcrumb from "../molecules/DynamicBreadcrumb";
-import classNames from "classnames";
 import { useDITStore } from "@/store/DITStore";
-import { DocumentationAction } from "../molecules/DocumentationAction";
-import { DocumentCategoryEnum } from "@/types";
+import { DataCategoryTabs } from "../organisms/DataCategoryTabs";
+import { dataCategories, isCategoryIncluded } from "@/lib/dataCategories";
 import { Button } from "../atoms/button";
 import { Loader } from "../atoms/Loader";
 import React from "react";
@@ -16,7 +15,7 @@ import { FastForwardIcon } from "lucide-react";
 
 export function Finetune() {
     const { t } = useTranslation();
-    const { documentation, setDocumentation } = useDITStore();
+    const { documentation, setDocumentation, includedCategories } = useDITStore();
     const { session_id } = useParams();
     const navigate = useNavigate()
 
@@ -105,19 +104,20 @@ export function Finetune() {
                     <div className="mx-4">
                         <DynamicBreadcrumb items={breadcrumbItems} />
                         <div className="flex flex-col gap-8 mt-10">
-                            <div className={classNames("bg-wpGray-100 rounded-2xl p-10 flex flex-col gap-8 ")}>
-                                <span className="font-outfit font-extrabold text-[2rem] text-wpBlue mb-8">
+                            <div className="flex flex-col gap-1">
+                                <h1 className="font-outfit font-extrabold text-[2rem] text-wpBlue">
                                     {t("finetune.title")}
+                                </h1>
+                                <span className="font-inter text-base text-wpBlue">
+                                    {t("finetune.subtitle")}
                                 </span>
-                                {documentation.map((doc, index) => (
-                                    <div key={doc.name} className="flex flex-col">
-                                        <DocumentationAction
-                                            documentCategory={doc.name as DocumentCategoryEnum} sessionId={session_id ?? null} />
-                                        {index !== documentation.length - 1 && (
-                                            <div className="border border-wpBlue-500 mt-4"></div>)}
-                                    </div>
-                                ))}
                             </div>
+                            <DataCategoryTabs
+                                categories={dataCategories.filter((category) =>
+                                    isCategoryIncluded(category, includedCategories, documentation),
+                                )}
+                                sessionId={session_id ?? null}
+                            />
                             <Button
                                 onClick={handleClick}
                                 variant={"secondary"}

@@ -14,10 +14,11 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { Loader } from "../atoms/Loader";
 import { v4 as uuidv4 } from 'uuid';
+import { getIncludedCategories } from "@/lib/dataCategories";
 
 export function AreaSelector() {
     const { t } = useTranslation();
-    const { downLoadedAreas, adminLevel, countries, selectedAreas, setSelectedAreas, setDocumentation, setSessionId, reset, hasLivestockEmissions, hasConcentrations, hasRisks } = useDITStore();
+    const { downLoadedAreas, adminLevel, countries, selectedAreas, setSelectedAreas, setDocumentation, setIncludedCategories, setSessionId, reset, hasHumanEmissions, hasLivestockEmissions, hasConcentrations, hasRisks } = useDITStore();
 
     // "Level 0 (Country)", "Level 1 (Region, Province)", ... built from the selected countries' admin labels.
     const levelLabels = React.useMemo(() => {
@@ -44,6 +45,7 @@ export function AreaSelector() {
             );
 
             setDocumentation(result.data.resources);
+            setIncludedCategories(getIncludedCategories({ hasHumanEmissions, hasLivestockEmissions, hasConcentrations, hasRisks }));
             reset();
             toast.success(t("customizeModel.successMessage"));
             navigate(`/finetune/${newSessionId}`);

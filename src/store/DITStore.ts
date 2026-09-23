@@ -27,6 +27,9 @@ type DITState = {
   setSelectedAreas: (areas: string[]) => void;
   documentation: Documentation[];
   setDocumentation: (documetation: Documentation[]) => void;
+  /** Machine names of the data categories selected when the session was generated. */
+  includedCategories: string[];
+  setIncludedCategories: (categories: string[]) => void;
   reset: () => void;
   resetAreaNDocumentation: () => void;
 };
@@ -102,9 +105,13 @@ export const useDITStore = create<DITState>((set) => ({
   documentation: [],
   setDocumentation: (documentation: Documentation[]) =>
     set({ documentation: documentation }),
+  includedCategories: [],
+  setIncludedCategories: (categories: string[]) =>
+    set({ includedCategories: categories }),
 
   /*
   *   Reset all states to initial values.
+  *   Keeps `documentation` and `includedCategories`, which the Preview data page needs.
   */
   reset: () =>
     set({
@@ -121,6 +128,7 @@ export const useDITStore = create<DITState>((set) => ({
   resetAreaNDocumentation: () =>
     set({
       selectedAreas: [],
-      documentation: []
+      documentation: [],
+      includedCategories: [],
     }),
 }));

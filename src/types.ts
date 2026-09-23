@@ -78,9 +78,3 @@ export enum AdminstrativeLevelEnum {
   Level4 = "Level4",
   Level5 = "Level5",
 }
-
-export enum DocumentCategoryEnum {
-  Sanitation = "sanitation",
-  Population = "population",
-  Treatment = "treatment",
-}
