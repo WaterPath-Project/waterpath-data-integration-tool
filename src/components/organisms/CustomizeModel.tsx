@@ -20,7 +20,7 @@ import { getIncludedCategories } from "@/lib/dataCategories";
 
 export function CustomizeModel() {
   const { t } = useTranslation();
-  const { countries, area, setDocumentation, setIncludedCategories, reset, resetAreaNDocumentation, setSessionId, hasHumanEmissions, hasLivestockEmissions, hasConcentrations, hasRisks } = useDITStore();
+  const { countries, area, setDocumentation, setIncludedCategories, reset, resetAreaNDocumentation, setSessionId, hasHumanEmissions, hasLivestockEmissions, hasHydrology, hasRisks } = useDITStore();
   const navigate = useNavigate()
   const [loading, setLoading] = React.useState(false);
 
@@ -41,11 +41,11 @@ export function CustomizeModel() {
     try {
       await api.post(`https://dev.waterpath.venthic.com/api/session/create/?session_id=${newSessionId}`);
       const result = await api.post(
-        `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${newSessionId}&gids=${countries.map(country => country.GID_0).join(",")}&include_livestock=${hasLivestockEmissions}&include_hydrology=${hasConcentrations}&include_qmra=${hasRisks}`
+        `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${newSessionId}&gids=${countries.map(country => country.GID_0).join(",")}&include_livestock=${hasLivestockEmissions}&include_hydrology=${hasHydrology}&include_qmra=${hasRisks}`
       );
 
       setDocumentation(result.data.resources);
-      setIncludedCategories(getIncludedCategories({ hasHumanEmissions, hasLivestockEmissions, hasConcentrations, hasRisks }));
+      setIncludedCategories(getIncludedCategories({ hasHumanEmissions, hasLivestockEmissions, hasHydrology, hasRisks }));
       reset();
       toast.success(t("customizeModel.successMessage"));
       navigate(`/finetune/${newSessionId}`);

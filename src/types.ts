@@ -56,6 +56,65 @@ export type Field = {
   type: string;
 };
 
+//Summarize input data (GET /api/data/input/summarize)
+export type SummarizeResponse = {
+  baseline_scenario_id: string;
+  metrics: SummarizeMetric[];
+  scenarios: SummarizeScenario[];
+};
+
+export type SummarizeMetric = {
+  key: string;
+  driver: string;
+  label: string;
+  delta_mode: string;
+  value_format: string;
+  color_direction: string;
+};
+
+export type SummarizeScenario = {
+  id: string;
+  name: string;
+  year: string;
+  ssp: string;
+  is_baseline: boolean;
+  wwtp_mode: string;
+  metrics: SummarizeMetrics;
+};
+
+export type SummarizeMetrics = {
+  population_total: number;
+  population_urban_mean_pct: number;
+  population_under5_mean_pct: number;
+  population_hdi_mean: number;
+  sanitation_improved_pct: number;
+  sanitation_unimproved_pct: number;
+  sanitation_open_defecation_pct: number;
+  wastewater_sewage_treated_pct: number;
+  wastewater_fecal_sludge_treated_pct: number;
+  wastewater_facility_count: number | null;
+  wastewater_total_capacity: number | null;
+  wastewater_share_primary_pct: number;
+  wastewater_share_secondary_pct: number;
+  wastewater_share_tertiary_pct: number;
+  wastewater_share_quaternary_pct: number;
+  livestock_mean_population_growth: number;
+  manure_direct_land_application_pct: number;
+  manure_storage_pct: number;
+  manure_treated_pct: number;
+  production_mean_progress_intensive_pct: number;
+  hydrology_mean_annual_discharge: number;
+  hydrology_mean_annual_runoff: number;
+  hydrology_mean_river_temperature: number;
+  hydrology_mean_ssrd: number;
+  exposure_drinking_events_per_year: number;
+  exposure_swimming_events_per_year: number;
+  exposure_flooding_events_per_year: number;
+  exposure_open_drain_events_per_year: number;
+  exposure_playing_events_per_year: number;
+  exposure_washing_clothes_events_per_year: number;
+};
+
 /*
  * Component
  */

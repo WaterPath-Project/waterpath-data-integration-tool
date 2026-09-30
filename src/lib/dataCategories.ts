@@ -39,15 +39,15 @@ export const dataCategories: DataCategory[] = [
     machineName: "livestock_emissions",
     icon: "livestock_emissions.svg",
     subcategories: [
-      { machineName: "manure_management", icon: "manure_management.svg", fileId: "manure_management" },
-      { machineName: "manure_fractions", icon: "livestock_population.svg", fileId: "manure_fractions" },
-      { machineName: "production_systems", icon: "production_systems.svg", fileId: "production_systems" },
+      { machineName: "manure_management", icon: "manure_management.svg", fileId: "livestock_manure_management" },
+      { machineName: "manure_fractions", icon: "livestock_population.svg", fileId: "livestock_manure_fractions" },
+      { machineName: "production_systems", icon: "production_systems.svg", fileId: "livestock_production_systems" },
     ],
   },
   {
-    machineName: "concentrations",
+    machineName: "hydrology",
     icon: "concentrations.svg",
-    subcategories: [{ machineName: "hydrology", icon: "concentrations.svg" }],
+    subcategories: [{ machineName: "hydrology_variables", icon: "concentrations.svg" }],
   },
   {
     machineName: "risk",
@@ -59,7 +59,7 @@ export const dataCategories: DataCategory[] = [
 export type SimulationFlags = {
   hasHumanEmissions: boolean;
   hasLivestockEmissions: boolean;
-  hasConcentrations: boolean;
+  hasHydrology: boolean;
   hasRisks: boolean;
 };
 
@@ -68,7 +68,7 @@ export function getIncludedCategories(flags: SimulationFlags): string[] {
   const mapping: Record<string, boolean> = {
     human_emissions: flags.hasHumanEmissions,
     livestock_emissions: flags.hasLivestockEmissions,
-    concentrations: flags.hasConcentrations,
+    hydrology: flags.hasHydrology,
     risk: flags.hasRisks,
   };
   return Object.keys(mapping).filter((name) => mapping[name]);

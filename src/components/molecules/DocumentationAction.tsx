@@ -8,29 +8,38 @@ import React from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../atoms/dialog";
 import { categoryIcons } from "@/components/assets/categoryIcons";
 import { DataSubcategory } from "@/lib/dataCategories";
+import { Scenario, sspParam } from "@/lib/scenarios";
 
 type DocumentationActionProps = {
     subcategory: DataSubcategory;
     sessionId: string | null;
     /** `file_id` for the download API, or `null` while the file is not available. */
     fileId: string | null;
+    /** When set, the download targets this projection scenario instead of the baseline. */
+    scenario?: Scenario;
 };
 
-export function DocumentationAction({ subcategory, sessionId, fileId }: DocumentationActionProps) {
+export function DocumentationAction({ subcategory, sessionId, fileId, scenario }: DocumentationActionProps) {
     const { t } = useTranslation();
     const [previewData, setPreviewData] = React.useState<string[][]>([]);
     const [isPreviewOpen, setIsPreviewOpen] = React.useState(false);
     const isAvailable = fileId !== null && sessionId !== null;
+    const fileName = scenario ? `${fileId}_${sspParam(scenario.ssp)}_${scenario.year}` : `${fileId}`;
 
     const downloadDocumentation = async () => {
+        const params = new URLSearchParams({ session_id: `${sessionId}`, file_id: `${fileId}` });
+        if (scenario) {
+            params.set("scenario", sspParam(scenario.ssp));
+            params.set("year", scenario.year);
+        }
         const result = await api.get(
-            `https://dev.waterpath.venthic.com/api/data/input/download?session_id=${sessionId}&file_id=${fileId}`,
+            `https://dev.waterpath.venthic.com/api/data/input/download?${params.toString()}`,
         );
         return result.data;
     };
 
     const { isFetching, refetch } = useQuery({
-        queryKey: ["downloadDocumentation", sessionId, fileId],
+        queryKey: ["downloadDocumentation", sessionId, fileId, scenario?.ssp ?? null, scenario?.year ?? null],
         queryFn: downloadDocumentation,
         enabled: false,
     });
@@ -45,7 +54,7 @@ export function DocumentationAction({ subcategory, sessionId, fileId }: Document
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `${fileId}.csv`;
+            a.download = `${fileName}.csv`;
             document.body.appendChild(a);
             a.click();
             a.remove();
@@ -82,7 +91,7 @@ export function DocumentationAction({ subcategory, sessionId, fileId }: Document
                         {t(`dataCategories.${subcategory.machineName}.title`)}
                     </span>
                 </div>
-                <span className="font-inter text-xs text-wpBlue">
+                <span className="font-inter text-base text-wpBlue">
                     {t(`dataCategories.${subcategory.machineName}.description`)}
                 </span>
             </div>
@@ -113,7 +122,7 @@ export function DocumentationAction({ subcategory, sessionId, fileId }: Document
             <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
                 <DialogContent className="font-outfit text-wpBlue max-w-5xl max-h-[80vh] overflow-y-auto ">
                     <DialogHeader>
-                        <DialogTitle className="font-semibold text-2xl">{t("finetune.previewTitle") + ` - ${fileId}.csv`}</DialogTitle>
+                        <DialogTitle className="font-semibold text-2xl">{t("finetune.previewTitle") + ` - ${fileName}.csv`}</DialogTitle>
                         <DialogDescription>
                             {t("finetune.previewDescription")}
                         </DialogDescription>

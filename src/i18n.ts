@@ -43,6 +43,7 @@ i18n
             generateAreasData: "Generating area data...",
             loadingAllTheAreas: "Loading areas...",
             finishProcess: "Finishing packaging...",
+            generateScenarioData: "Generating scenario data...",
           },
           customizeModel: {
             title: "Prepare input data",
@@ -50,7 +51,7 @@ i18n
               "The current version of GloWPa allows overriding data for the following categories:",
             simulate: "",
             livestockEmissions: "Livestock Emissions",
-            concentrations: "Concentrations",
+            hydrology: "Hydrology",
             emissions: "Human Emissions",
             risk: "Risk",
             countriesOfInterest: "Set the geographic resolution for your simulation:",
@@ -103,6 +104,25 @@ i18n
             previewTitle: "CSV Preview",
             previewDescription: "This is a preview of the generated data in CSV format.",
             notAvailable: "Not available yet.",
+            baselineTab: "Baseline",
+            newTab: "New scenario",
+            scenariosTableButton: "View summary of changes",
+            summaryTitle: "Summary of changes",
+            geodataPreviewButton: "Map preview",
+            newModalTitle: "New scenario",
+            newModalDescription: "Create a new scenario based on the baseline data.",
+            newModalScenarioLabel: "Scenario",
+            newModalScenarioPlaceholder: "Select a scenario",
+            newModalYearLabel: "Target year",
+            newModalCreate: "Create",
+            newModalSuccessMessage: "Scenario created successfully.",
+            sspScenarios: {
+              ssp1: "SSP1",
+              ssp2: "SSP2",
+              ssp3: "SSP3",
+              ssp4: "SSP4",
+              ssp5: "SSP5",
+            },
             finishButton: "Finish",
             errorMessage: "Oops! Something went wrong. Please try again.",
             successMessage:
@@ -155,13 +175,13 @@ i18n
               description:
                 "Defines the share of each animal group raised in intensive and extensive systems. The production split changes where manure is concentrated and how livestock emissions enter the environment.",
             },
-            concentrations: {
-              title: "Concentrations",
+            hydrology: {
+              title: "Hydrology",
               description:
                 "Data used to model the transport, survival, and resulting concentrations of pathogens in surface water.",
             },
-            hydrology: {
-              title: "Hydrology",
+            hydrology_variables: {
+              title: "Hydrology variables",
               description:
                 "Describes river discharge, surface runoff, river temperature, and solar radiation across the scenario. Discharge and runoff control dilution, downstream transport, and the movement of pathogens from land into rivers. Water temperature and solar radiation influence pathogen die-off and therefore the concentrations that remain in surface water.",
             },

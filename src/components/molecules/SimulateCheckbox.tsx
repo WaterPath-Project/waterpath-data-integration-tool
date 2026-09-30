@@ -10,8 +10,8 @@ export function SimulateCheckbox(): React.ReactElement {
     setHasHumanEmissions,
     hasLivestockEmissions,
     setHasLivestockEmissions,
-    hasConcentrations,
-    setHasConcentrations,
+    hasHydrology,
+    setHasHydrology,
     hasRisks,
     setHasRisks,
   } = useDITStore();
@@ -49,14 +49,14 @@ export function SimulateCheckbox(): React.ReactElement {
         </div>
         <div className="flex flex-row gap-2 items-center">
           <Checkbox
-            id="concentrations"
-            checked={hasConcentrations}
+            id="hydrology"
+            checked={hasHydrology}
             onCheckedChange={(checked) =>
-              setHasConcentrations(checked as boolean)
+              setHasHydrology(checked as boolean)
             }
           />
-          <label htmlFor="concentrations" className="text-sm font-inter ">
-            {t("customizeModel.concentrations")}
+          <label htmlFor="hydrology" className="text-sm font-inter ">
+            {t("customizeModel.hydrology")}
           </label>
         </div>
         <div className="flex flex-row gap-2 items-center">

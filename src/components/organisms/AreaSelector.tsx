@@ -18,7 +18,7 @@ import { getIncludedCategories } from "@/lib/dataCategories";
 
 export function AreaSelector() {
     const { t } = useTranslation();
-    const { downLoadedAreas, adminLevel, countries, selectedAreas, setSelectedAreas, setDocumentation, setIncludedCategories, setSessionId, reset, hasHumanEmissions, hasLivestockEmissions, hasConcentrations, hasRisks } = useDITStore();
+    const { downLoadedAreas, adminLevel, countries, selectedAreas, setSelectedAreas, setDocumentation, setIncludedCategories, setSessionId, reset, hasHumanEmissions, hasLivestockEmissions, hasHydrology, hasRisks } = useDITStore();
 
     // "Level 0 (Country)", "Level 1 (Region, Province)", ... built from the selected countries' admin labels.
     const levelLabels = React.useMemo(() => {
@@ -41,11 +41,11 @@ export function AreaSelector() {
         try {
             await api.post(`https://dev.waterpath.venthic.com/api/session/create/?session_id=${newSessionId}`);
             const result = await api.post(
-                `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${newSessionId}&gids=${selectedAreas.join(",")}&include_livestock=${hasLivestockEmissions}&include_hydrology=${hasConcentrations}&include_qmra=${hasRisks}`
+                `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${newSessionId}&gids=${selectedAreas.join(",")}&include_livestock=${hasLivestockEmissions}&include_hydrology=${hasHydrology}&include_qmra=${hasRisks}`
             );
 
             setDocumentation(result.data.resources);
-            setIncludedCategories(getIncludedCategories({ hasHumanEmissions, hasLivestockEmissions, hasConcentrations, hasRisks }));
+            setIncludedCategories(getIncludedCategories({ hasHumanEmissions, hasLivestockEmissions, hasHydrology, hasRisks }));
             reset();
             toast.success(t("customizeModel.successMessage"));
             navigate(`/finetune/${newSessionId}`);

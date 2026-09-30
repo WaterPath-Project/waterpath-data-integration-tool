@@ -11,13 +11,31 @@ import { useNavigate, useParams } from "react-router";
 import api from "@/api";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { FastForwardIcon } from "lucide-react";
+import { FastForwardIcon, MapIcon, PlusIcon, Table2Icon } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../atoms/tabs";
+import { NewScenarioDialog } from "../organisms/NewScenarioDialog";
+import { SummaryOfChangesTable } from "../organisms/SummaryOfChangesTable";
+import { GEODATA_PREVIEW_FILES, Scenario, scenarioId, sspParam } from "@/lib/scenarios";
+import { SummarizeResponse } from "@/types";
+import classNames from "classnames";
+import { useIsWrapped } from "@/hooks/useIsWrapped";
 
 export function Finetune() {
     const { t } = useTranslation();
     const { documentation, setDocumentation, includedCategories } = useDITStore();
     const { session_id } = useParams();
     const navigate = useNavigate()
+    const [isNewOpen, setIsNewOpen] = React.useState(false);
+    const [scenarios, setScenarios] = React.useState<Scenario[]>([]);
+    const [activeTab, setActiveTab] = React.useState("baseline");
+    const { ref: scenarioListRef, isWrapped: isScenarioListWrapped } = useIsWrapped<HTMLDivElement>([scenarios.length]);
+
+    const visibleCategories = dataCategories.filter((category) =>
+        isCategoryIncluded(category, includedCategories, documentation),
+    );
+
+    const scenarioLabel = (scenario: Scenario) =>
+        `${t(`finetune.sspScenarios.${scenario.ssp}`)}-${scenario.year}`;
 
     const breadcrumbItems = [
         { name: t("breadcrumb.home"), url: "/" },
@@ -52,6 +70,84 @@ export function Finetune() {
         queryFn: downloadDocumentation,
         enabled: false,
     });
+
+    const summarizeInput = async (): Promise<SummarizeResponse> => {
+        const result = await api.get<SummarizeResponse>(
+            `https://dev.waterpath.venthic.com/api/data/input/summarize?session_id=${session_id}`,
+        );
+        return result.data;
+    };
+
+    const { data: summaryData, isFetching: isSummarizing, isError: isSummaryError, refetch: refetchSummary } = useQuery({
+        queryKey: ["summarizeInput", session_id],
+        queryFn: summarizeInput,
+        enabled: false,
+        retry: false,
+    });
+
+    const [isSummaryOpen, setIsSummaryOpen] = React.useState(false);
+
+    const handleScenarioCreated = (scenario: Scenario) => {
+        setScenarios((prev) => [...prev, scenario]);
+        setActiveTab(scenarioId(scenario));
+        if (isSummaryOpen) {
+            void refetchSummary();
+        }
+    };
+
+    // Toggles the summary table; opening it refreshes the data so new scenarios show up.
+    const handleToggleSummary = async () => {
+        if (isSummaryOpen) {
+            setIsSummaryOpen(false);
+            return;
+        }
+        setIsSummaryOpen(true);
+        const result = await refetchSummary();
+        if (result.isError) {
+            console.error("Error:", result.error);
+            toast.error(t("finetune.errorMessage"));
+        }
+    };
+
+    const activeScenario = scenarios.find((scenario) => scenarioId(scenario) === activeTab);
+
+    // Testing aid: fetches every geodata preview file for the active scenario in one go.
+    const previewGeodata = async () => {
+        if (!activeScenario) throw new Error("No scenario selected");
+        const results = await Promise.all(
+            GEODATA_PREVIEW_FILES.map(async (file) => {
+                const params = new URLSearchParams({
+                    session_id: `${session_id}`,
+                    year: activeScenario.year,
+                    SSP: sspParam(activeScenario.ssp),
+                    file,
+                });
+                if (file === "livestock-distribution") {
+                    params.set("dimension", "goats");
+                }
+                const result = await api.post(`https://dev.waterpath.venthic.com/api/geodata/preview?${params.toString()}`);
+                return [file, result.data] as const;
+            }),
+        );
+        return Object.fromEntries(results);
+    };
+
+    const { isFetching: isPreviewingGeodata, refetch: refetchGeodata } = useQuery({
+        queryKey: ["previewGeodata", session_id, activeScenario?.ssp ?? null, activeScenario?.year ?? null],
+        queryFn: previewGeodata,
+        enabled: false,
+        retry: false,
+    });
+
+    const handlePreviewGeodata = async () => {
+        const result = await refetchGeodata();
+        if (result.isError) {
+            console.error("Error:", result.error);
+            toast.error(t("finetune.errorMessage"));
+            return;
+        }
+        console.log("Geodata preview:", result.data);
+    };
 
     const handleClick = async () => {
         const result = await refetch();
@@ -112,11 +208,112 @@ export function Finetune() {
                                     {t("finetune.subtitle")}
                                 </span>
                             </div>
-                            <DataCategoryTabs
-                                categories={dataCategories.filter((category) =>
-                                    isCategoryIncluded(category, includedCategories, documentation),
-                                )}
+                            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col gap-8">
+                                <div className="flex flex-row items-center gap-2">
+                                    <TabsList
+                                        ref={scenarioListRef}
+                                        className={classNames(
+                                            "h-auto w-fit max-w-full flex flex-row flex-wrap justify-start gap-2 bg-wpGray-200 p-3 text-wpBlue",
+                                            isScenarioListWrapped ? "rounded-2xl" : "rounded-3xl",
+                                        )}
+                                    >
+                                        <TabsTrigger
+                                            value="baseline"
+                                            className="shrink-0 rounded-full px-4 py-1.5 font-outfit font-bold text-sm text-wpBlue shadow-none hover:bg-white/50 data-[state=active]:bg-white data-[state=active]:text-wpBlue focus-visible:ring-0 focus-visible:ring-offset-0"
+                                        >
+                                            {t("finetune.baselineTab")}
+                                        </TabsTrigger>
+                                        {scenarios.map((scenario) => (
+                                            <TabsTrigger
+                                                key={scenarioId(scenario)}
+                                                value={scenarioId(scenario)}
+                                                className="shrink-0 rounded-full px-4 py-1.5 font-outfit font-bold text-sm text-wpBlue shadow-none hover:bg-white/50 data-[state=active]:bg-white data-[state=active]:text-wpBlue focus-visible:ring-0 focus-visible:ring-offset-0"
+                                            >
+                                                {scenarioLabel(scenario)}
+                                            </TabsTrigger>
+                                        ))}
+                                    </TabsList>
+                                    <Button
+                                        type="button"
+                                        variant="primary"
+                                        size="sm"
+                                        onClick={() => setIsNewOpen(true)}
+                                        className="shrink-0 rounded-full px-4 font-outfit font-bold text-sm"
+                                    >
+                                        <PlusIcon />
+                                        {t("finetune.newTab")}
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant={isSummaryOpen ? "secondary" : "default"}
+                                        size="sm"
+                                        disabled={scenarios.length === 0}
+                                        onClick={handleToggleSummary}
+                                        aria-pressed={isSummaryOpen}
+                                        aria-expanded={isSummaryOpen}
+                                        aria-controls="summary-of-changes"
+                                        className="shrink-0 rounded-full px-4 font-outfit font-bold text-sm"
+                                    >
+                                        <Table2Icon />
+                                        {t("finetune.scenariosTableButton")}
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="default"
+                                        size="icon"
+                                        disabled={!activeScenario || isPreviewingGeodata}
+                                        onClick={handlePreviewGeodata}
+                                        aria-label={t("finetune.geodataPreviewButton")}
+                                        title={t("finetune.geodataPreviewButton")}
+                                        className="h-9 w-9 shrink-0 rounded-full text-wpBlue"
+                                    >
+                                        <MapIcon />
+                                    </Button>
+                                </div>
+                                <div
+                                    id="summary-of-changes"
+                                    aria-hidden={!isSummaryOpen}
+                                    className={classNames(
+                                        "grid transition-all duration-300 ease-out",
+                                        isSummaryOpen
+                                            ? "grid-rows-[1fr] opacity-100 translate-y-0"
+                                            : "grid-rows-[0fr] opacity-0 -translate-y-3 pointer-events-none",
+                                    )}
+                                >
+                                    <div className="min-h-0 overflow-hidden">
+                                        <div className="rounded-2xl border border-wpGray-200 bg-white overflow-hidden">
+                                            <SummaryOfChangesTable
+                                                data={summaryData}
+                                                loading={isSummarizing}
+                                                error={isSummaryError ? t("finetune.errorMessage") : ""}
+                                                title={t("finetune.summaryTitle")}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <TabsContent value="baseline" className="mt-0">
+                                    <DataCategoryTabs
+                                        categories={visibleCategories}
+                                        sessionId={session_id ?? null}
+                                    />
+                                </TabsContent>
+                                {scenarios.map((scenario) => (
+                                    <TabsContent key={scenarioId(scenario)} value={scenarioId(scenario)} className="mt-0">
+                                        <DataCategoryTabs
+                                            categories={visibleCategories}
+                                            sessionId={session_id ?? null}
+                                            scenario={scenario}
+                                        />
+                                    </TabsContent>
+                                ))}
+                            </Tabs>
+                            <NewScenarioDialog
+                                open={isNewOpen}
+                                onOpenChange={setIsNewOpen}
                                 sessionId={session_id ?? null}
+                                categories={visibleCategories}
+                                scenarios={scenarios}
+                                onCreated={handleScenarioCreated}
                             />
                             <Button
                                 onClick={handleClick}

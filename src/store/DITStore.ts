@@ -15,8 +15,8 @@ type DITState = {
   setHasHumanEmissions: (hasHumanEmissions: boolean) => void;
   hasLivestockEmissions: boolean;
   setHasLivestockEmissions: (hasLivestockEmissions: boolean) => void;
-  hasConcentrations: boolean;
-  setHasConcentrations: (hasConcentrations: boolean) => void;
+  hasHydrology: boolean;
+  setHasHydrology: (hasHydrology: boolean) => void;
   hasRisks: boolean;
   setHasRisks: (hasRisks: boolean) => void;
   downLoadedAreas: GADMAreas[];
@@ -77,9 +77,9 @@ export const useDITStore = create<DITState>((set) => ({
   hasLivestockEmissions: false,
   setHasLivestockEmissions: (newHasLivestockEmissions: boolean) =>
     set({ hasLivestockEmissions: newHasLivestockEmissions }),
-  hasConcentrations: false,
-  setHasConcentrations: (newHasConcentrations: boolean) =>
-    set({ hasConcentrations: newHasConcentrations }),
+  hasHydrology: false,
+  setHasHydrology: (newHasHydrology: boolean) =>
+    set({ hasHydrology: newHasHydrology }),
   hasRisks: false,
   setHasRisks: (newHasRisks: boolean) => set({ hasRisks: newHasRisks }),
 
@@ -120,7 +120,7 @@ export const useDITStore = create<DITState>((set) => ({
       adminLevel: AdminstrativeLevelEnum.Level1,
       hasHumanEmissions: true,
       hasLivestockEmissions: false,
-      hasConcentrations: false,
+      hasHydrology: false,
       hasRisks: false,
       downLoadedAreas: [],
       selectedAreas: [],

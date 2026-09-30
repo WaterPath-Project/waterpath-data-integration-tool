@@ -3,18 +3,21 @@ import classNames from "classnames";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../atoms/tabs";
 import { categoryIcons } from "@/components/assets/categoryIcons";
 import { DataCategory, hasAvailableFiles } from "@/lib/dataCategories";
+import { Scenario } from "@/lib/scenarios";
 import { DataCategorySection } from "./DataCategorySection";
 
 type DataCategoryTabsProps = {
   categories: DataCategory[];
   sessionId: string | null;
+  /** Projection scenario whose files are shown; omit for the baseline. */
+  scenario?: Scenario;
 };
 
 /**
  * Tabbed view of the input-data categories on the Preview data page.
  * Categories without any downloadable file are shown as disabled tabs.
  */
-export function DataCategoryTabs({ categories, sessionId }: DataCategoryTabsProps) {
+export function DataCategoryTabs({ categories, sessionId, scenario }: DataCategoryTabsProps) {
   const { t } = useTranslation();
   const defaultCategory = categories.find(hasAvailableFiles) ?? categories[0];
 
@@ -25,7 +28,7 @@ export function DataCategoryTabs({ categories, sessionId }: DataCategoryTabsProp
   return (
     <div className="bg-wpGray-100 rounded-2xl p-6 flex flex-col gap-8">
       <Tabs defaultValue={defaultCategory.machineName}>
-        <TabsList className="h-auto w-fit max-w-full inline-flex flex-row flex-wrap justify-start gap-2 rounded-2xl bg-wpGray-200 p-2 text-wpBlue shadow-inner">
+        <TabsList className="h-auto w-fit max-w-full inline-flex flex-row flex-wrap justify-start gap-2 rounded-2xl bg-wpGray-200 p-2 text-wpBlue">
           {categories.map((category) => {
             const available = hasAvailableFiles(category);
             return (
@@ -36,7 +39,7 @@ export function DataCategoryTabs({ categories, sessionId }: DataCategoryTabsProp
                 <TabsTrigger
                   value={category.machineName}
                   disabled={!available}
-                  className="flex flex-row items-center gap-3 rounded-xl px-4 py-2 font-outfit font-bold text-lg text-wpBlue shadow-none hover:bg-white/50 data-[state=active]:bg-white data-[state=active]:text-wpBlue data-[state=active]:shadow-md focus-visible:ring-wpBlue-200 disabled:pointer-events-none disabled:opacity-50"
+                  className="flex flex-row items-center gap-3 rounded-xl px-4 py-2 font-outfit font-bold text-lg text-wpBlue shadow-none hover:bg-white/50 data-[state=active]:bg-white data-[state=active]:text-wpBlue focus-visible:ring-0 focus-visible:ring-offset-0 disabled:pointer-events-none disabled:opacity-50"
                 >
                   <img
                     src={categoryIcons[category.icon]}
@@ -60,7 +63,7 @@ export function DataCategoryTabs({ categories, sessionId }: DataCategoryTabsProp
         </TabsList>
         {categories.map((category) => (
           <TabsContent key={category.machineName} value={category.machineName} className="mt-8">
-            <DataCategorySection category={category} sessionId={sessionId} />
+            <DataCategorySection category={category} sessionId={sessionId} scenario={scenario} />
           </TabsContent>
         ))}
       </Tabs>
