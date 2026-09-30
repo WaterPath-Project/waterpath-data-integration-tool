@@ -30,6 +30,12 @@ type DITState = {
   /** Machine names of the data categories selected when the session was generated. */
   includedCategories: string[];
   setIncludedCategories: (categories: string[]) => void;
+  /**
+   * GADM ids the session was generated for (GID_0 for whole countries, e.g. "UGA";
+   * GID_n for specific areas, e.g. "UGA.1_1"). Used to outline and frame map previews.
+   */
+  selectedAreaGids: string[];
+  setSelectedAreaGids: (gids: string[]) => void;
   reset: () => void;
   resetAreaNDocumentation: () => void;
 };
@@ -108,10 +114,14 @@ export const useDITStore = create<DITState>((set) => ({
   includedCategories: [],
   setIncludedCategories: (categories: string[]) =>
     set({ includedCategories: categories }),
+  selectedAreaGids: [],
+  setSelectedAreaGids: (gids: string[]) =>
+    set({ selectedAreaGids: gids }),
 
   /*
   *   Reset all states to initial values.
-  *   Keeps `documentation` and `includedCategories`, which the Preview data page needs.
+  *   Keeps `documentation`, `includedCategories` and `selectedAreaGids`,
+  *   which the Preview data page needs.
   */
   reset: () =>
     set({
@@ -130,5 +140,6 @@ export const useDITStore = create<DITState>((set) => ({
       selectedAreas: [],
       documentation: [],
       includedCategories: [],
+      selectedAreaGids: [],
     }),
 }));

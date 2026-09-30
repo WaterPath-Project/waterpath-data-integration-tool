@@ -18,7 +18,7 @@ import { getIncludedCategories } from "@/lib/dataCategories";
 
 export function AreaSelector() {
     const { t } = useTranslation();
-    const { downLoadedAreas, adminLevel, countries, selectedAreas, setSelectedAreas, setDocumentation, setIncludedCategories, setSessionId, reset, hasHumanEmissions, hasLivestockEmissions, hasHydrology, hasRisks } = useDITStore();
+    const { downLoadedAreas, adminLevel, countries, selectedAreas, setSelectedAreas, setDocumentation, setIncludedCategories, setSelectedAreaGids, setSessionId, reset, hasHumanEmissions, hasLivestockEmissions, hasHydrology, hasRisks } = useDITStore();
 
     // "Level 0 (Country)", "Level 1 (Region, Province)", ... built from the selected countries' admin labels.
     const levelLabels = React.useMemo(() => {
@@ -46,6 +46,7 @@ export function AreaSelector() {
 
             setDocumentation(result.data.resources);
             setIncludedCategories(getIncludedCategories({ hasHumanEmissions, hasLivestockEmissions, hasHydrology, hasRisks }));
+            setSelectedAreaGids(selectedAreas);
             reset();
             toast.success(t("customizeModel.successMessage"));
             navigate(`/finetune/${newSessionId}`);

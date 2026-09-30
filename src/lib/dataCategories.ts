@@ -1,4 +1,5 @@
 import { CategoryIconName } from "@/components/assets/categoryIcons";
+import { MapPreviewKind } from "@/lib/mapPreviews";
 import { Documentation } from "@/types";
 
 /**
@@ -23,12 +24,18 @@ export type DataCategory = {
   machineName: string;
   icon: CategoryIconName;
   subcategories: DataSubcategory[];
+  /**
+   * Map preview shown beside the subcategories on the Preview data page
+   * (see `MAP_PREVIEWS`). Leave undefined for categories without one.
+   */
+  mapPreview?: MapPreviewKind;
 };
 
 export const dataCategories: DataCategory[] = [
   {
     machineName: "human_emissions",
     icon: "human_emissions.svg",
+    mapPreview: "population",
     subcategories: [
       { machineName: "population", icon: "human_population.svg", fileId: "population" },
       { machineName: "sanitation", icon: "sanitation.svg", fileId: "sanitation" },
@@ -38,6 +45,7 @@ export const dataCategories: DataCategory[] = [
   {
     machineName: "livestock_emissions",
     icon: "livestock_emissions.svg",
+    mapPreview: "livestock",
     subcategories: [
       { machineName: "manure_management", icon: "manure_management.svg", fileId: "livestock_manure_management" },
       { machineName: "manure_fractions", icon: "livestock_population.svg", fileId: "livestock_manure_fractions" },
@@ -47,11 +55,13 @@ export const dataCategories: DataCategory[] = [
   {
     machineName: "hydrology",
     icon: "concentrations.svg",
+    mapPreview: "hydrology",
     subcategories: [{ machineName: "hydrology_variables", icon: "concentrations.svg" }],
   },
   {
     machineName: "risk",
     icon: "risk.svg",
+    mapPreview: "risk",
     subcategories: [{ machineName: "exposure_pathways", icon: "risk.svg" }],
   },
 ];

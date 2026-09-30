@@ -20,7 +20,7 @@ import { getIncludedCategories } from "@/lib/dataCategories";
 
 export function CustomizeModel() {
   const { t } = useTranslation();
-  const { countries, area, setDocumentation, setIncludedCategories, reset, resetAreaNDocumentation, setSessionId, hasHumanEmissions, hasLivestockEmissions, hasHydrology, hasRisks } = useDITStore();
+  const { countries, area, setDocumentation, setIncludedCategories, setSelectedAreaGids, reset, resetAreaNDocumentation, setSessionId, hasHumanEmissions, hasLivestockEmissions, hasHydrology, hasRisks } = useDITStore();
   const navigate = useNavigate()
   const [loading, setLoading] = React.useState(false);
 
@@ -46,6 +46,7 @@ export function CustomizeModel() {
 
       setDocumentation(result.data.resources);
       setIncludedCategories(getIncludedCategories({ hasHumanEmissions, hasLivestockEmissions, hasHydrology, hasRisks }));
+      setSelectedAreaGids(countries.map((country) => country.GID_0));
       reset();
       toast.success(t("customizeModel.successMessage"));
       navigate(`/finetune/${newSessionId}`);

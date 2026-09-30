@@ -11,11 +11,11 @@ import { useNavigate, useParams } from "react-router";
 import api from "@/api";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { FastForwardIcon, MapIcon, PlusIcon, Table2Icon } from "lucide-react";
+import { FastForwardIcon, PlusIcon, Table2Icon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../atoms/tabs";
 import { NewScenarioDialog } from "../organisms/NewScenarioDialog";
 import { SummaryOfChangesTable } from "../organisms/SummaryOfChangesTable";
-import { GEODATA_PREVIEW_FILES, Scenario, scenarioId, sspParam } from "@/lib/scenarios";
+import { Scenario, scenarioId } from "@/lib/scenarios";
 import { SummarizeResponse } from "@/types";
 import classNames from "classnames";
 import { useIsWrapped } from "@/hooks/useIsWrapped";
@@ -107,46 +107,6 @@ export function Finetune() {
             console.error("Error:", result.error);
             toast.error(t("finetune.errorMessage"));
         }
-    };
-
-    const activeScenario = scenarios.find((scenario) => scenarioId(scenario) === activeTab);
-
-    // Testing aid: fetches every geodata preview file for the active scenario in one go.
-    const previewGeodata = async () => {
-        if (!activeScenario) throw new Error("No scenario selected");
-        const results = await Promise.all(
-            GEODATA_PREVIEW_FILES.map(async (file) => {
-                const params = new URLSearchParams({
-                    session_id: `${session_id}`,
-                    year: activeScenario.year,
-                    SSP: sspParam(activeScenario.ssp),
-                    file,
-                });
-                if (file === "livestock-distribution") {
-                    params.set("dimension", "goats");
-                }
-                const result = await api.post(`https://dev.waterpath.venthic.com/api/geodata/preview?${params.toString()}`);
-                return [file, result.data] as const;
-            }),
-        );
-        return Object.fromEntries(results);
-    };
-
-    const { isFetching: isPreviewingGeodata, refetch: refetchGeodata } = useQuery({
-        queryKey: ["previewGeodata", session_id, activeScenario?.ssp ?? null, activeScenario?.year ?? null],
-        queryFn: previewGeodata,
-        enabled: false,
-        retry: false,
-    });
-
-    const handlePreviewGeodata = async () => {
-        const result = await refetchGeodata();
-        if (result.isError) {
-            console.error("Error:", result.error);
-            toast.error(t("finetune.errorMessage"));
-            return;
-        }
-        console.log("Geodata preview:", result.data);
     };
 
     const handleClick = async () => {
@@ -256,18 +216,6 @@ export function Finetune() {
                                     >
                                         <Table2Icon />
                                         {t("finetune.scenariosTableButton")}
-                                    </Button>
-                                    <Button
-                                        type="button"
-                                        variant="default"
-                                        size="icon"
-                                        disabled={!activeScenario || isPreviewingGeodata}
-                                        onClick={handlePreviewGeodata}
-                                        aria-label={t("finetune.geodataPreviewButton")}
-                                        title={t("finetune.geodataPreviewButton")}
-                                        className="h-9 w-9 shrink-0 rounded-full text-wpBlue"
-                                    >
-                                        <MapIcon />
                                     </Button>
                                 </div>
                                 <div

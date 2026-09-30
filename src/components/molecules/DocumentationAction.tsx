@@ -95,6 +95,8 @@ export function DocumentationAction({ subcategory, sessionId, fileId, scenario }
                     {t(`dataCategories.${subcategory.machineName}.description`)}
                 </span>
             </div>
+            {/* Subcategories without a file (e.g. hydrology variables) get no actions at all. */}
+            {fileId !== null && (
             <div className="flex flex-row flex-wrap gap-2 items-center">
                 <Button
                     disabled={!isAvailable || isFetching}
@@ -117,6 +119,7 @@ export function DocumentationAction({ subcategory, sessionId, fileId, scenario }
                     </span>
                 )}
             </div>
+            )}
 
             {/* Modal for CSV Preview */}
             <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>

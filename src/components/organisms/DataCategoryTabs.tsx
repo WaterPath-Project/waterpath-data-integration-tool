@@ -3,6 +3,7 @@ import classNames from "classnames";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../atoms/tabs";
 import { categoryIcons } from "@/components/assets/categoryIcons";
 import { DataCategory, hasAvailableFiles } from "@/lib/dataCategories";
+import { useDITStore } from "@/store/DITStore";
 import { Scenario } from "@/lib/scenarios";
 import { DataCategorySection } from "./DataCategorySection";
 
@@ -19,7 +20,11 @@ type DataCategoryTabsProps = {
  */
 export function DataCategoryTabs({ categories, sessionId, scenario }: DataCategoryTabsProps) {
   const { t } = useTranslation();
-  const defaultCategory = categories.find(hasAvailableFiles) ?? categories[0];
+  const includedCategories = useDITStore((state) => state.includedCategories);
+  // A category is usable when it has downloadable files or was selected on the first screen.
+  const isAvailable = (category: DataCategory) =>
+    hasAvailableFiles(category) || includedCategories.includes(category.machineName);
+  const defaultCategory = categories.find(isAvailable) ?? categories[0];
 
   if (!defaultCategory) {
     return null;
@@ -30,7 +35,7 @@ export function DataCategoryTabs({ categories, sessionId, scenario }: DataCatego
       <Tabs defaultValue={defaultCategory.machineName}>
         <TabsList className="h-auto w-fit max-w-full inline-flex flex-row flex-wrap justify-start gap-2 rounded-2xl bg-wpGray-200 p-2 text-wpBlue">
           {categories.map((category) => {
-            const available = hasAvailableFiles(category);
+            const available = isAvailable(category);
             return (
               <span
                 key={category.machineName}
