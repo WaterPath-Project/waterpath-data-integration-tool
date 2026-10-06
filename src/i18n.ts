@@ -27,9 +27,10 @@ i18n
             subtitle: "WATERPATH TOOLKIT",
           },
           breadcrumb: {
-            "home": "Prepare input data",
+            "home": "Prepare data",
             "areas": "Specify areas",
             "finetune": "Preview data",
+            "success": "Finish",
           },
           glowpa: {
             title: "Get the model",
@@ -46,7 +47,7 @@ i18n
             generateScenarioData: "Generating scenario data...",
           },
           customizeModel: {
-            title: "Prepare input data",
+            title: "Prepare data",
             subtitle:
               "The current version of GloWPa allows overriding data for the following categories:",
             simulate: "",
@@ -174,6 +175,7 @@ i18n
           },
           success: {
             backHomeButton: "Download again",
+            startAgainButton: "Start again",
             documentationButton: "View instructions",
             thanks: "You have generated your GloWPa input data successfully!",
             instructions: "Check the downloaded file and use the instructions below on how to use it with the model code."

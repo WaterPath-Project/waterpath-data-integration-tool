@@ -1,18 +1,28 @@
 
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Button } from "../atoms/button";
 import { BasicLayout } from "../templates";
 import { useTranslation } from "react-i18next";
-import { BookTextIcon, RefreshCcwIcon } from "lucide-react";
+import { BookTextIcon, RefreshCcwIcon, RotateCcwIcon } from "lucide-react";
 import api from "@/api";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Loader } from "../atoms/Loader";
 import React from "react";
+import { useDITStore } from "@/store/DITStore";
+import DynamicBreadcrumb from "../molecules/DynamicBreadcrumb";
 
 export function Success(): React.ReactElement {
     const { session_id } = useParams();
     const { t } = useTranslation();
+    const navigate = useNavigate();
+    const { reset, resetAreaNDocumentation, setSessionId } = useDITStore();
+
+    const breadcrumbItems = [
+        { name: t("breadcrumb.home"), url: "/" },
+        { name: t("breadcrumb.finetune"), url: `/finetune/${session_id ?? ""}` },
+        { name: t("breadcrumb.success") },
+    ];
 
     const downloadDocumentation = async () => {
         const result = await api.get(
@@ -58,18 +68,30 @@ export function Success(): React.ReactElement {
         window.open('https://waterpath-toolkit.org/docs/example-dataset/', '_blank');
     }
 
+    // Clears the wizard state and returns to the first screen.
+    const handleStartAgain = () => {
+        reset();
+        resetAreaNDocumentation();
+        setSessionId(null);
+        navigate('/');
+    };
+
     return (
         <>
             {isFetching && (
                 <Loader message={t("loader.finishProcess")} />
             )}
             <BasicLayout>
-                <div className="whitespace-pre-line sm:mx-4 mt-20  p-16 bg-wpBrown rounded-2xl w-full flex flex-col gap-8 font-outfit text-wpBlue">
-                    <span className="font-extrabold text-2xl">{t("success.thanks")}</span>
-                    <span className="font-medium">{t("success.instructions")}</span>
-                    <div className="flex">
-                        <Button variant={"primary"} className="rounded-[8px] mr-2 font-inter font-bold text-xs w-64 flex  gap-2 items-center" onClick={handleDocClick}><BookTextIcon /> {t("success.documentationButton")}</Button>
-                        <Button variant={"link"} className="rounded-[8px] font-inter font-bold text-xs w-64 flex  gap-2 items-center" onClick={handleClick}><RefreshCcwIcon /> {t("success.backHomeButton")}</Button>
+                <div className="mx-4">
+                    <DynamicBreadcrumb items={breadcrumbItems} />
+                    <div className="whitespace-pre-line mt-10 p-16 bg-wpBrown rounded-2xl w-full flex flex-col gap-8 font-outfit text-wpBlue">
+                        <span className="font-extrabold text-2xl">{t("success.thanks")}</span>
+                        <span className="font-medium">{t("success.instructions")}</span>
+                        <div className="flex">
+                            <Button variant={"primary"} className="rounded-[8px] mr-2 font-inter font-bold text-xs w-64 flex  gap-2 items-center" onClick={handleDocClick}><BookTextIcon /> {t("success.documentationButton")}</Button>
+                            <Button variant={"secondary"} className="rounded-[8px] mr-2 font-inter font-bold text-xs w-64 flex  gap-2 items-center" onClick={handleStartAgain}><RotateCcwIcon /> {t("success.startAgainButton")}</Button>
+                            <Button variant={"link"} className="rounded-[8px] px-0 font-inter font-bold text-xs flex  gap-2 items-center" onClick={handleClick}><RefreshCcwIcon /> {t("success.backHomeButton")}</Button>
+                        </div>
                     </div>
                 </div>
             </BasicLayout>
