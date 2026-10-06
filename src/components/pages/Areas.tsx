@@ -13,7 +13,7 @@ import { useNavigate } from "react-router";
 
 
 export function Areas() {
-    const { countries, adminLevel, addDownLoadedAreas } = useDITStore();
+    const { countries, adminLevel, selectedAreas, setDownLoadedAreas, setSelectedAreas } = useDITStore();
     const { t } = useTranslation();
 
     // Redirect to home if no countries are available
@@ -40,7 +40,7 @@ export function Areas() {
     const areasByCountryQueries = useQueries({
         queries: countries.map((country) => {
             return {
-                queryKey: ['area', country.GID_0],
+                queryKey: ['area', country.GID_0, levelEnumToNumber(adminLevel)],
                 queryFn: () => fetchAreasByCountry(country.GID_0, levelEnumToNumber(adminLevel)),
             }
         }),
@@ -56,7 +56,16 @@ export function Areas() {
                 .map(q => q.data) // array of GADMAreas[]
                 .flat(); // flatten into GADMAreas[]
 
-            addDownLoadedAreas(combinedData);
+            setDownLoadedAreas(combinedData);
+
+            // Keep only selections that still exist for the current countries and level,
+            // so stale picks are dropped when the user changes either and comes back.
+            const leafKey = `GID_${levelEnumToNumber(adminLevel)}` as keyof GADMAreas;
+            const available = new Set(combinedData.map((area) => area[leafKey]));
+            const stillValid = selectedAreas.filter((gid) => available.has(gid));
+            if (stillValid.length !== selectedAreas.length) {
+                setSelectedAreas(stillValid);
+            }
         }
     }, [allFetched]);
 

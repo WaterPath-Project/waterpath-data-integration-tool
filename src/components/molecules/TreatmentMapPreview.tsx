@@ -26,7 +26,9 @@ export function TreatmentMapPreview({ sessionId, config, scenario, className }: 
     queryFn: () => fetchPreview(previewRequest),
     enabled: sessionId !== null,
     retry: false,
-    staleTime: 5 * 60 * 1000,
+    // Map layers are never cached: every selection fetches the current file from the server.
+    staleTime: 0,
+    gcTime: 0,
   });
   const tifUrl = usePreviewUrl(data);
 

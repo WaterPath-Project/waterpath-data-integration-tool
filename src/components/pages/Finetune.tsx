@@ -16,13 +16,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../atoms/tabs";
 import { NewScenarioDialog } from "../organisms/NewScenarioDialog";
 import { SummaryOfChangesTable } from "../organisms/SummaryOfChangesTable";
 import { Scenario, scenarioId } from "@/lib/scenarios";
-import { SummarizeResponse } from "@/types";
+import { Documentation, SummarizeResponse } from "@/types";
 import classNames from "classnames";
 import { useIsWrapped } from "@/hooks/useIsWrapped";
+import { fetchSessionAreaGids } from "@/lib/sessionAreas";
 
 export function Finetune() {
     const { t } = useTranslation();
-    const { documentation, setDocumentation, includedCategories } = useDITStore();
+    const { documentation, setDocumentation, includedCategories, selectedAreaGids, setSelectedAreaGids } = useDITStore();
     const { session_id } = useParams();
     const navigate = useNavigate()
     const [isNewOpen, setIsNewOpen] = React.useState(false);
@@ -42,11 +43,20 @@ export function Finetune() {
         { name: t("breadcrumb.finetune") },
     ];
 
-    const getSessionData = async () => {
-        const result = await api.get(
-            `https://dev.waterpath.venthic.com/api/session?session_id=${session_id}`,
+    // The session endpoint returns a flat list of file names (e.g. "population.csv"), not the
+    // datapackage `resources` the generate endpoint returns. Only `name` is read downstream
+    // (see isCategoryIncluded), and it must match a subcategory fileId, i.e. the file name
+    // without its extension. Returning undefined here would make TanStack Query throw.
+    const getSessionData = async (): Promise<Documentation[]> => {
+        const result = await api.get<string[] | { resources?: Documentation[] }>(
+            `https://dev.waterpath.venthic.com/api/session/?session_id=${session_id}`,
         );
-        return result.data.resources;
+        const data = result.data;
+        if (!Array.isArray(data)) {
+            return data?.resources ?? [];
+        }
+        const names = new Set(data.map((file) => file.replace(/\.[^.]+$/, "")));
+        return Array.from(names).map((name) => ({ name }) as Documentation);
     };
 
     const { data, isFetching, isSuccess, isError } = useQuery({
@@ -54,6 +64,22 @@ export function Finetune() {
         queryFn: getSessionData,
         enabled: session_id !== undefined && documentation.length === 0,
     });
+
+    // Area ids drive the map outlines and clipping. They are set when generating, but lost
+    // on refresh, so recover them from the session's population file when the store is empty.
+    const { data: sessionAreaGids } = useQuery({
+        queryKey: ["sessionAreaGids", session_id],
+        queryFn: () => fetchSessionAreaGids(session_id as string),
+        enabled: session_id !== undefined && selectedAreaGids.length === 0,
+        retry: false,
+        staleTime: Infinity,
+    });
+
+    React.useEffect(() => {
+        if (sessionAreaGids && sessionAreaGids.length > 0 && selectedAreaGids.length === 0) {
+            setSelectedAreaGids(sessionAreaGids);
+        }
+    }, [sessionAreaGids]);
 
     const downloadDocumentation = async () => {
         const result = await api.get(

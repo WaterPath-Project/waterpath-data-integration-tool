@@ -10,11 +10,14 @@ export type FlowLegendData = {
   hasDischarge: boolean;
   hasAcc: boolean;
   hasDepth: boolean;
+  /** Bearings estimated from a discharge raster (no routing data served). */
+  derivedFromDischarge: boolean;
 };
 
 /**
  * Loads flow vectors from a URL that serves either the flow-vectors GeoJSON
- * (possibly wrapped in another object) or a D8 routing GeoTIFF.
+ * (possibly wrapped in another object) or a GeoTIFF (D8 routing, or discharge
+ * from which the directions are estimated).
  */
 const loadFlowVectors = async (url: string): Promise<FlowVectors> => {
   const ab = await fetch(url).then((r) => r.arrayBuffer());
@@ -29,8 +32,67 @@ const loadFlowVectors = async (url: string): Promise<FlowVectors> => {
   return buildFlowVectorsFromGeoraster(georaster);
 };
 
+/** One arrow with everything that does not depend on the viewport precomputed. */
+type Arrow = {
+  lat: number;
+  lon: number;
+  /** Rotation in radians (canvas x axis = downstream). */
+  rad: number;
+  color: string;
+  /** 0..1, drives stroke width and head size. */
+  sizeNorm: number;
+};
+
+const positive = (v: number | null | undefined): v is number => v != null && Number.isFinite(v) && v > 0;
+
+/** Discharge (log scale) -> pale cyan .. wpTeal .. dark teal; neutral teal when unknown. */
+function dischargeColor(dis: number | null | undefined, maxDis: number): string {
+  if (!positive(dis)) return "#18B6A3";
+  const t = Math.min(1, Math.log10(Math.max(dis, 1)) / Math.log10(Math.max(maxDis, 2)));
+  return `rgb(${Math.round(161 - t * 148)},${Math.round(235 - t * 128)},${Math.round(227 - t * 128)})`;
+}
+
+/**
+ * Precomputes colour (discharge) and size (depth when available, otherwise flow
+ * accumulation; both log scale) for every feature. Loops instead of spreads so
+ * large grids do not overflow the call stack.
+ */
+function prepareArrows(features: FlowFeature[]): Arrow[] {
+  let maxDis = 0;
+  let maxAcc = 0;
+  let minDep = Infinity;
+  let maxDep = 0;
+  for (const f of features) {
+    const { discharge, acc, depth } = f.properties;
+    if (positive(discharge) && discharge > maxDis) maxDis = discharge;
+    if (positive(acc) && acc > maxAcc) maxAcc = acc;
+    if (positive(depth)) {
+      if (depth > maxDep) maxDep = depth;
+      if (depth < minDep) minDep = depth;
+    }
+  }
+  const hasDepth = maxDep > 0;
+  const logMaxAcc = maxAcc > 0 ? Math.log10(maxAcc) : 6;
+  const logMaxDep = hasDepth ? Math.log10(Math.max(maxDep, 0.01)) : 0;
+  const logMinDep = hasDepth ? Math.log10(Math.max(minDep, 0.001)) : 0;
+
+  return features.map((f) => {
+    const [lon, lat] = f.geometry.coordinates;
+    const { bearing = 0, discharge, acc = 1, depth } = f.properties;
+    let sizeNorm: number;
+    if (hasDepth && positive(depth)) {
+      const logDep = Math.log10(Math.max(depth, 0.001));
+      sizeNorm = logMaxDep > logMinDep ? Math.max(0, Math.min(1, (logDep - logMinDep) / (logMaxDep - logMinDep))) : 0.5;
+    } else {
+      const logAcc = Math.log10(Math.max(acc, 1));
+      sizeNorm = logMaxAcc > 0 ? Math.max(0, Math.min(1, logAcc / logMaxAcc)) : 0.5;
+    }
+    return { lat, lon, rad: (bearing - 90) * (Math.PI / 180), color: dischargeColor(discharge, maxDis), sizeNorm };
+  });
+}
+
 type FlowArrowLayerProps = {
-  /** Flow-vectors GeoJSON URL (see the 02-hydrology README), or a D8 routing GeoTIFF URL. */
+  /** Flow-vectors GeoJSON URL (see the 02-hydrology README), or a GeoTIFF URL. */
   url: string;
   /** Hide cells with acc < max(acc) x minAccPct / 100 (default 0). */
   minAccPct?: number;
@@ -38,14 +100,16 @@ type FlowArrowLayerProps = {
 };
 
 /**
- * Canvas layer drawing D8 flow-direction arrows (one per river cell, pointing downstream).
+ * Canvas layer drawing flow arrows (one per river cell, pointing downstream).
  *   colour -> discharge (m3/s, log scale): pale cyan -> wpTeal -> dark teal
  *   width  -> river depth when available, otherwise flow accumulation (log scale)
  *   size   -> ~75% of the raster cell width in screen pixels
  *
- * Port of `02-hydrology/FlowArrowLayer.jsx` from waterpath-reporting-suite. The
- * only addition is `loadFlowVectors`, which also accepts a routing GeoTIFF and
- * builds the vectors in the browser (port of `scripts/flow_vectors.py`).
+ * The canvas is attached to the map container, not to a Leaflet pane, and is
+ * redrawn on move, zoom and resize. Per-arrow styling is computed once per load;
+ * each redraw only projects the arrows inside the current viewport.
+ *
+ * Port of `02-hydrology/FlowArrowLayer.jsx` from waterpath-reporting-suite.
  */
 export function FlowArrowLayer({ url, minAccPct = 0, onLegendData }: FlowArrowLayerProps) {
   const map = useMap();
@@ -54,9 +118,9 @@ export function FlowArrowLayer({ url, minAccPct = 0, onLegendData }: FlowArrowLa
     if (!url) return;
     let cancelled = false;
     let rafId = 0;
-    let features: FlowFeature[] = [];
-    let cellDegX = 0;
-    let cellDegY = 0;
+    let arrows: Arrow[] = [];
+    let cellDegX = 0.5;
+    let cellDegY = 0.5;
 
     // Attached to the map container, not a pane: pane transforms would shift every
     // latLngToContainerPoint() result a second time during pan/zoom.
@@ -65,84 +129,53 @@ export function FlowArrowLayer({ url, minAccPct = 0, onLegendData }: FlowArrowLa
     canvasEl.className = "leaflet-flow-arrow-layer";
     canvasEl.style.cssText = "position:absolute;top:0;left:0;pointer-events:none;z-index:590;";
     container.appendChild(canvasEl);
-
-    const resizeCanvas = () => {
-      const size = map.getSize();
-      canvasEl.width = size.x;
-      canvasEl.height = size.y;
-    };
-    resizeCanvas();
     const ctx = canvasEl.getContext("2d");
     if (!ctx) return;
 
+    // Backing store at device pixel ratio for crisp strokes; drawing stays in CSS pixels.
+    const resizeCanvas = () => {
+      const size = map.getSize();
+      const dpr = window.devicePixelRatio || 1;
+      canvasEl.width = Math.max(1, Math.round(size.x * dpr));
+      canvasEl.height = Math.max(1, Math.round(size.y * dpr));
+      canvasEl.style.width = `${size.x}px`;
+      canvasEl.style.height = `${size.y}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resizeCanvas();
+
     const drawArrows = () => {
-      ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
-      if (!features.length) return;
+      const size = map.getSize();
+      ctx.clearRect(0, 0, size.x, size.y);
+      if (!arrows.length) return;
 
-      const disVals = features.map((f) => f.properties.discharge).filter((v): v is number => v != null && v > 0);
-      const maxDis = disVals.length ? Math.max(...disVals) : 1;
+      // Arrow size from the cell footprint at the current zoom, measured at the map centre.
+      const centre = map.getCenter();
+      const ptRef = map.latLngToContainerPoint(centre);
+      const ptOffX = map.latLngToContainerPoint([centre.lat, centre.lng + cellDegX]);
+      const ptOffY = map.latLngToContainerPoint([centre.lat + cellDegY, centre.lng]);
+      const cellPx = Math.min(Math.abs(ptOffX.x - ptRef.x), Math.abs(ptOffY.y - ptRef.y));
+      const arrowSz = Math.max(8, Math.min(120, cellPx * 0.75));
+      const stemLen = arrowSz * 0.7;
 
-      const accVals = features.map((f) => f.properties.acc).filter((v): v is number => v != null && v > 0);
-      const logMaxAcc = accVals.length ? Math.log10(Math.max(...accVals)) : 6;
+      const bounds = map.getBounds().pad(0.05);
+      ctx.globalAlpha = 0.85;
 
-      const hasDepth = features.some((f) => f.properties.depth != null && f.properties.depth > 0);
-      const depVals = hasDepth ? features.map((f) => f.properties.depth ?? 0).filter((v) => v > 0) : [];
-      const logMaxDep = hasDepth ? Math.log10(Math.max(...depVals, 0.01)) : 0;
-      const logMinDep = hasDepth ? Math.log10(Math.max(Math.min(...depVals), 0.001)) : 0;
-
-      const refFeat = features[Math.floor(features.length / 2)];
-      const [refLon, refLat] = refFeat.geometry.coordinates;
-      const ptRef = map.latLngToContainerPoint([refLat, refLon]);
-      const ptOffX = map.latLngToContainerPoint([refLat, refLon + (cellDegX || 0.5)]);
-      const ptOffY = map.latLngToContainerPoint([refLat + (cellDegY || 0.5), refLon]);
-      const cellPxW = Math.abs(ptOffX.x - ptRef.x);
-      const cellPxH = Math.abs(ptOffY.y - ptRef.y);
-      const arrowSz = Math.max(8, Math.min(120, Math.min(cellPxW, cellPxH) * 0.75));
-
-      const bounds = map.getBounds();
-
-      for (const feat of features) {
-        const [lon, lat] = feat.geometry.coordinates;
-        if (!bounds.contains([lat, lon])) continue;
-
-        const bearing = feat.properties.bearing ?? 0;
-        const dis = feat.properties.discharge;
-        const acc = feat.properties.acc ?? 1;
-        const depth = feat.properties.depth;
-
-        let arrowColor = "#18B6A3";
-        if (dis != null && dis > 0) {
-          const t = Math.min(1, Math.log10(Math.max(dis, 1)) / Math.log10(Math.max(maxDis, 2)));
-          arrowColor = `rgb(${Math.round(161 - t * 148)},${Math.round(235 - t * 128)},${Math.round(227 - t * 128)})`;
-        }
-
-        let sizeNorm: number;
-        if (hasDepth && depth != null && depth > 0) {
-          const logDep = Math.log10(Math.max(depth, 0.001));
-          sizeNorm = logMaxDep > logMinDep ? Math.max(0, Math.min(1, (logDep - logMinDep) / (logMaxDep - logMinDep))) : 0.5;
-        } else {
-          const logAcc = Math.log10(Math.max(acc, 1));
-          sizeNorm = logMaxAcc > 0 ? logAcc / logMaxAcc : 0.5;
-        }
-
-        const lineWidth = (0.08 + sizeNorm * 0.22) * arrowSz;
-
-        const pt = map.latLngToContainerPoint([lat, lon]);
-        const rad = (bearing - 90) * (Math.PI / 180);
-        const stemLen = arrowSz * 0.7;
-        const hw = arrowSz * 0.28 * (0.5 + sizeNorm * 0.5);
-        const hl = arrowSz * 0.44 * (0.5 + sizeNorm * 0.5);
+      for (const arrow of arrows) {
+        if (!bounds.contains([arrow.lat, arrow.lon])) continue;
+        const pt = map.latLngToContainerPoint([arrow.lat, arrow.lon]);
+        const hw = arrowSz * 0.28 * (0.5 + arrow.sizeNorm * 0.5);
+        const hl = arrowSz * 0.44 * (0.5 + arrow.sizeNorm * 0.5);
 
         ctx.save();
-        ctx.globalAlpha = 0.85;
         ctx.translate(pt.x, pt.y);
-        ctx.rotate(rad);
+        ctx.rotate(arrow.rad);
 
         ctx.beginPath();
         ctx.moveTo(-stemLen / 2, 0);
         ctx.lineTo(stemLen / 2, 0);
-        ctx.strokeStyle = arrowColor;
-        ctx.lineWidth = Math.max(0.8, lineWidth);
+        ctx.strokeStyle = arrow.color;
+        ctx.lineWidth = Math.max(0.8, (0.08 + arrow.sizeNorm * 0.22) * arrowSz);
         ctx.stroke();
 
         ctx.beginPath();
@@ -150,7 +183,7 @@ export function FlowArrowLayer({ url, minAccPct = 0, onLegendData }: FlowArrowLa
         ctx.lineTo(stemLen / 2 - hl, -hw);
         ctx.lineTo(stemLen / 2 - hl, hw);
         ctx.closePath();
-        ctx.fillStyle = arrowColor;
+        ctx.fillStyle = arrow.color;
         ctx.fill();
 
         ctx.restore();
@@ -161,13 +194,11 @@ export function FlowArrowLayer({ url, minAccPct = 0, onLegendData }: FlowArrowLa
       cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(drawArrows);
     };
-
-    const onMove = () => scheduleRedraw();
     const onResize = () => {
       resizeCanvas();
       scheduleRedraw();
     };
-    map.on("move moveend zoomend", onMove);
+    map.on("move zoom moveend zoomend viewreset", scheduleRedraw);
     map.on("resize", onResize);
 
     loadFlowVectors(url)
@@ -175,19 +206,29 @@ export function FlowArrowLayer({ url, minAccPct = 0, onLegendData }: FlowArrowLa
         if (cancelled) return;
         const all = data.features ?? [];
         // Idempotent with a server-side min_acc_pct filter: max(acc) survives filtering.
-        const maxAcc = all.reduce((m, f) => Math.max(m, f.properties.acc ?? 0), 0);
+        let maxAcc = 0;
+        for (const f of all) if (positive(f.properties.acc) && f.properties.acc > maxAcc) maxAcc = f.properties.acc;
         const threshold = (maxAcc * minAccPct) / 100;
-        features = all.filter((f) => (f.properties.acc ?? 0) >= threshold);
+        const features = all.filter((f) => (f.properties.acc ?? 0) >= threshold);
         cellDegX = data.cell_deg_x ?? 0.5;
         cellDegY = data.cell_deg_y ?? 0.5;
+        arrows = prepareArrows(features);
 
-        const disVals = features.map((f) => f.properties.discharge).filter((v): v is number => v != null && v > 0);
+        let minDis: number | null = null;
+        let maxDis: number | null = null;
+        for (const f of features) {
+          const dis = f.properties.discharge;
+          if (!positive(dis)) continue;
+          minDis = minDis === null ? dis : Math.min(minDis, dis);
+          maxDis = maxDis === null ? dis : Math.max(maxDis, dis);
+        }
         onLegendData?.({
-          minDis: disVals.length ? Math.min(...disVals) : null,
-          maxDis: disVals.length ? Math.max(...disVals) : null,
-          hasDischarge: disVals.length > 0,
+          minDis,
+          maxDis,
+          hasDischarge: maxDis !== null,
           hasAcc: features.some((f) => (f.properties.acc ?? 0) > 1),
-          hasDepth: features.some((f) => f.properties.depth != null && f.properties.depth > 0),
+          hasDepth: features.some((f) => positive(f.properties.depth)),
+          derivedFromDischarge: data.derived_from === "discharge",
         });
         scheduleRedraw();
       })
@@ -196,7 +237,7 @@ export function FlowArrowLayer({ url, minAccPct = 0, onLegendData }: FlowArrowLa
     return () => {
       cancelled = true;
       cancelAnimationFrame(rafId);
-      map.off("move moveend zoomend", onMove);
+      map.off("move zoom moveend zoomend viewreset", scheduleRedraw);
       map.off("resize", onResize);
       if (canvasEl.parentNode) canvasEl.parentNode.removeChild(canvasEl);
     };

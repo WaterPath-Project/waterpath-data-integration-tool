@@ -135,6 +135,7 @@ i18n
                 oct: "October",
                 nov: "November",
                 dec: "December",
+                avg: "Average",
               },
               legendTitles: {
                 "population-distribution": "People per cell",
@@ -223,6 +224,8 @@ i18n
             },
             hydrology: {
               title: "Hydrology",
+              notice:
+                "Hydrological inputs currently available represent interim datasets. Standardized and updated hydrological data layers will be released in Spring 2027, following the release of the <isimip4>ISIMIP4 simulation round</isimip4>.",
               description:
                 "Data used to model the transport, survival, and resulting concentrations of pathogens in surface water.",
             },

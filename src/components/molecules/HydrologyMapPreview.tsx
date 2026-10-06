@@ -32,15 +32,19 @@ export function HydrologyMapPreview({ sessionId, config, scenario, className }: 
   const [activeOverlay, setActiveOverlay] = React.useState<HydroOverlay | null>("flow");
 
   const file = activeOverlay ? config.files[activeOverlay] : null;
+  // "avg" is the yearly average: the API returns it when no dimension is sent.
+  const dimension = month === "avg" ? undefined : month;
   const previewRequest: PreviewRequest | null =
-    sessionId !== null && file ? { sessionId, file, scenario, dimension: month } : null;
+    sessionId !== null && file ? { sessionId, file, scenario, dimension } : null;
 
   const { data, isFetching, isError } = useQuery({
     queryKey: previewRequest ? previewQueryKey(previewRequest) : ["geodataPreview", "hydrology", "idle"],
     queryFn: () => fetchPreview(previewRequest as PreviewRequest),
     enabled: previewRequest !== null,
     retry: false,
-    staleTime: 5 * 60 * 1000,
+    // Map layers are never cached: every selection fetches the current file from the server.
+    staleTime: 0,
+    gcTime: 0,
   });
   const url = usePreviewUrl(data);
   const loadedUrl = !isFetching && !isError ? url : null;

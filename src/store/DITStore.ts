@@ -20,7 +20,7 @@ type DITState = {
   hasRisks: boolean;
   setHasRisks: (hasRisks: boolean) => void;
   downLoadedAreas: GADMAreas[];
-  addDownLoadedAreas: (country: GADMAreas[]) => void;
+  setDownLoadedAreas: (areas: GADMAreas[]) => void;
   selectedAreas: string[];
   addSelectedArea: (area: string) => void;
   removeSelectedArea: (area: string) => void;
@@ -93,10 +93,7 @@ export const useDITStore = create<DITState>((set) => ({
   *   State Management of GADM areas
   */
   downLoadedAreas: [],
-  addDownLoadedAreas: (newAreas: GADMAreas[]) =>
-    set((state) => ({
-      downLoadedAreas: [...state.downLoadedAreas, ...newAreas],
-    })),
+  setDownLoadedAreas: (areas: GADMAreas[]) => set({ downLoadedAreas: areas }),
   selectedAreas: [],
   addSelectedArea: (area: string) => set((state) => ({ selectedAreas: [...state.selectedAreas, area] })),
   removeSelectedArea: (area: string) =>
@@ -119,9 +116,9 @@ export const useDITStore = create<DITState>((set) => ({
     set({ selectedAreaGids: gids }),
 
   /*
-  *   Reset all states to initial values.
+  *   Reset the wizard choices to their initial values (used by "Start again").
   *   Keeps `documentation`, `includedCategories` and `selectedAreaGids`,
-  *   which the Preview data page needs.
+  *   which the Preview data page needs; see `resetAreaNDocumentation` for those.
   */
   reset: () =>
     set({

@@ -7,7 +7,7 @@ import type { RasterStats } from "./HydroInputRasterLayer";
 export type HydroOverlay = "flow" | "temp" | "ssrd" | "runoff";
 
 export const LAYER_INFO: Record<HydroOverlay, string> = {
-  flow: 'D8 flow-direction arrows from a routing model. Arrow width scales with stream size (flow accumulation % of basin max); colour scales with discharge (m³/s). The "Streams" slider sets the minimum catchment size shown — slide left to reveal headwater streams, right to show only major rivers.',
+  flow: 'Flow arrows pointing downstream, one per river cell. Arrow width scales with stream size (river depth, or flow accumulation % of basin max); colour scales with discharge (m³/s). The "Streams" slider sets the minimum stream size shown — slide left to reveal headwater streams, right to show only major rivers. When only discharge is available, directions are estimated from it.',
   temp: "Monthly or annual average river water temperature (°C) from climate input data.",
   ssrd: "Surface downwelling shortwave solar radiation (MJ m⁻²). Higher radiation accelerates pathogen die-off in open water.",
   runoff: "Overland surface runoff (mm or m³/s per cell) — water that flows across the land surface before entering channels. High-runoff areas are the main pathways for flushing pathogens from land into rivers.",
@@ -147,8 +147,15 @@ export function HydroMapControls({
                         <span>{fmtDischarge(flowLegend.maxDis)}</span>
                       </div>
                       <div className="text-[8px] text-gray-300 mt-1">
-                        {flowLegend.hasDepth ? "Width = river depth" : "Width = flow accumulation"}
+                        {flowLegend.hasDepth
+                          ? "Width = river depth"
+                          : flowLegend.derivedFromDischarge
+                            ? "Width = discharge"
+                            : "Width = flow accumulation"}
                       </div>
+                      {flowLegend.derivedFromDischarge && (
+                        <div className="text-[8px] text-gray-300">Direction estimated from discharge</div>
+                      )}
                     </>
                   ) : (
                     <div className="text-[9px] text-gray-300">No discharge data</div>

@@ -1,4 +1,5 @@
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
+import { InfoIcon } from "lucide-react";
 import { DataCategory } from "@/lib/dataCategories";
 import { Scenario } from "@/lib/scenarios";
 import { DocumentationAction } from "../molecules/DocumentationAction";
@@ -12,15 +13,41 @@ type DataCategorySectionProps = {
 };
 
 /**
- * Body of one input-data category (e.g. "Human emissions"): its description
- * followed by the subcategories with download / preview actions. Categories
- * with a `mapPreview` split the space with a map preview on the right.
+ * Links available inside category notices. A notice string wraps its link text in
+ * the matching tag, e.g. "<isimip4>ISIMIP4 simulation round</isimip4>".
+ */
+const NOTICE_LINKS: Record<string, string> = {
+  isimip4: "https://protocol4.isimip.org/#/ISIMIP4a",
+};
+
+const noticeLinkComponents = Object.fromEntries(
+  Object.entries(NOTICE_LINKS).map(([tag, href]) => [
+    tag,
+    <a href={href} target="_blank" rel="noreferrer" className="underline underline-offset-2" />,
+  ]),
+);
+
+/**
+ * Body of one input-data category (e.g. "Human emissions"): an optional notice
+ * (i18n `dataCategories.<name>.notice`), its description, then the subcategories
+ * with download / preview actions. Categories with a `mapPreview` split the
+ * space with a map preview on the right.
  */
 export function DataCategorySection({ category, sessionId, scenario }: DataCategorySectionProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const noticeKey = `dataCategories.${category.machineName}.notice`;
+  const hasNotice = i18n.exists(noticeKey);
 
   const content = (
     <>
+      {hasNotice && (
+        <div role="note" className="flex flex-row items-start gap-3 rounded-[8px] bg-wpBrown-200 p-4 font-inter text-sm text-wpBlue">
+          <InfoIcon className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+          <p>
+            <Trans i18nKey={noticeKey} components={noticeLinkComponents} />
+          </p>
+        </div>
+      )}
       <p className="font-inter text-xl text-wpBlue">
         {t(`dataCategories.${category.machineName}.description`)}
       </p>

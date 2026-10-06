@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import classNames from "classnames";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../atoms/tabs";
 import { categoryIcons } from "@/components/assets/categoryIcons";
-import { DataCategory, hasAvailableFiles } from "@/lib/dataCategories";
+import { DataCategory, hasAvailableFiles, isCategoryIncluded } from "@/lib/dataCategories";
 import { useDITStore } from "@/store/DITStore";
 import { Scenario } from "@/lib/scenarios";
 import { DataCategorySection } from "./DataCategorySection";
@@ -21,9 +21,11 @@ type DataCategoryTabsProps = {
 export function DataCategoryTabs({ categories, sessionId, scenario }: DataCategoryTabsProps) {
   const { t } = useTranslation();
   const includedCategories = useDITStore((state) => state.includedCategories);
-  // A category is usable when it has downloadable files or was selected on the first screen.
+  const documentation = useDITStore((state) => state.documentation);
+  // A category is usable when it has downloadable files, was selected on the first screen,
+  // or the session exposes it (page refresh / session opened by URL).
   const isAvailable = (category: DataCategory) =>
-    hasAvailableFiles(category) || includedCategories.includes(category.machineName);
+    hasAvailableFiles(category) || isCategoryIncluded(category, includedCategories, documentation);
   const defaultCategory = categories.find(isAvailable) ?? categories[0];
 
   if (!defaultCategory) {

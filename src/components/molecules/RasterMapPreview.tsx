@@ -30,7 +30,8 @@ export function RasterMapPreview({ sessionId, config, scenario, className }: Ras
   const [dimension, setDimension] = React.useState<string | null>(null);
 
   // Which dimensions (species) actually have raster values. Every candidate is fetched
-  // once; the rasters are seeded into the preview cache so the map does not refetch them.
+  // once; the rasters are seeded into the preview cache so the map paints at once, then
+  // refreshes from the server (layer queries are uncached).
   const { data: availableDimensions, isFetching: isProbingDimensions } = useQuery({
     queryKey: ["geodataDimensions", sessionId, file, scenario?.ssp ?? null, scenario?.year ?? null],
     queryFn: async () => {
@@ -73,7 +74,9 @@ export function RasterMapPreview({ sessionId, config, scenario, className }: Ras
     // With dimensions, wait until one with data is selected.
     enabled: sessionId !== null && (!hasDimensions || dimension !== null),
     retry: false,
-    staleTime: 5 * 60 * 1000,
+    // Map layers are never cached: every selection fetches the current file from the server.
+    staleTime: 0,
+    gcTime: 0,
   });
   const tifUrl = usePreviewUrl(data);
 

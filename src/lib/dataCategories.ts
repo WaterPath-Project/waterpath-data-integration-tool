@@ -29,6 +29,13 @@ export type DataCategory = {
    * (see `MAP_PREVIEWS`). Leave undefined for categories without one.
    */
   mapPreview?: MapPreviewKind;
+  /**
+   * Entries of the session listing (GET /api/session/) whose presence means the
+   * category was generated, e.g. the folder the backend writes its outputs to.
+   * The category's own machine name is always checked too, so this is only
+   * needed when the backend uses a different name (e.g. "qmra" for risk).
+   */
+  sessionMarkers?: string[];
 };
 
 export const dataCategories: DataCategory[] = [
@@ -62,6 +69,7 @@ export const dataCategories: DataCategory[] = [
     machineName: "risk",
     icon: "risk.svg",
     mapPreview: "risk",
+    sessionMarkers: ["qmra"],
     subcategories: [{ machineName: "exposure_pathways", icon: "risk.svg" }],
   },
 ];
@@ -91,18 +99,20 @@ export function hasAvailableFiles(category: DataCategory): boolean {
 
 /**
  * A category is shown on the Preview data page when it was selected on the
- * first screen, or when the session already exposes a file for one of its
- * subcategories (fallback for sessions opened directly by URL).
+ * first screen, or when the session already exposes it (fallback for a page
+ * refresh or a session opened directly by URL): either a file of one of its
+ * subcategories, or the category's output folder (`sessionMarkers` / machine name).
  */
 export function isCategoryIncluded(
   category: DataCategory,
   includedCategories: string[],
   resources: Documentation[],
 ): boolean {
+  if (includedCategories.includes(category.machineName)) return true;
+  const names = new Set(resources.map((resource) => resource.name));
+  const markers = [category.machineName, ...(category.sessionMarkers ?? [])];
   return (
-    includedCategories.includes(category.machineName) ||
-    category.subcategories.some(
-      (sub) => sub.fileId !== undefined && resources.some((resource) => resource.name === sub.fileId),
-    )
+    markers.some((marker) => names.has(marker)) ||
+    category.subcategories.some((sub) => sub.fileId !== undefined && names.has(sub.fileId))
   );
 }
