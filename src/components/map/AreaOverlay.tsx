@@ -16,13 +16,15 @@ type AreaOverlayProps = {
   geojson?: FeatureCollection | null;
   /** Fit map bounds to the areas (default true). */
   fit?: boolean;
+  /** Path style; defaults to a thin outline without fill. */
+  style?: L.PathOptions;
 };
 
 /**
  * Draws area outlines (no fill) and fits the map to them.
  * Ported from `shared/AreaOverlay.jsx` in waterpath-reporting-suite.
  */
-export function AreaOverlay({ geojson, fit = true }: AreaOverlayProps) {
+export function AreaOverlay({ geojson, fit = true, style }: AreaOverlayProps) {
   const map = useMap();
 
   React.useEffect(() => {
@@ -33,5 +35,5 @@ export function AreaOverlay({ geojson, fit = true }: AreaOverlayProps) {
 
   if (!geojson?.features?.length) return null;
 
-  return <LeafletGeoJSON key={geojson.features.length} data={geojson} style={areaStyle} />;
+  return <LeafletGeoJSON key={geojson.features.length} data={geojson} style={style ?? areaStyle} />;
 }

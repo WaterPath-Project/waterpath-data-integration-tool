@@ -10,6 +10,7 @@ import { useDITStore } from "@/store/DITStore";
 import { getAdminLevelLabels, levelEnumToNumber } from "@/tools/utils";
 import api from "@/api";
 import { SelectedAreaList } from "../molecules/SelectedAreaList";
+import { SELECTED_AREAS_MAP_HEIGHT, SelectedAreasMap } from "../molecules/SelectedAreasMap";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 import { Loader } from "../atoms/Loader";
@@ -32,6 +33,9 @@ export function AreaSelector() {
     const navigate = useNavigate()
 
     const [loading, setLoading] = React.useState(false);
+
+    // The map is opened on demand and stays open, redrawing as the selection changes.
+    const [mapOpen, setMapOpen] = React.useState(false);
 
     const handleSubmit = async () => {
         const newSessionId = uuidv4();
@@ -105,7 +109,36 @@ export function AreaSelector() {
                     />
                 </Card>
                 <div className="border border-wpBlue-500"></div>
-                <SelectedAreaList level={levelEnumToNumber(adminLevel)} />
+                {/*
+                  Row 1: the "Selected areas" header across both columns.
+                  Row 2: the selected-areas card and the map, side by side with equal height.
+                  The map column animates between 0 and half width so the card grows and shrinks smoothly.
+                */}
+                <div
+                    style={{ "--map-height": `${SELECTED_AREAS_MAP_HEIGHT}px` } as React.CSSProperties}
+                    className={classNames(
+                        "grid grid-cols-1 items-stretch gap-y-4 transition-[grid-template-columns,column-gap] duration-300 ease-out",
+                        mapOpen ? "lg:grid-cols-[1fr_1fr] lg:gap-x-8" : "lg:grid-cols-[1fr_0fr] lg:gap-x-0",
+                    )}
+                >
+                    <div className="contents">
+                        <SelectedAreaList
+                            level={levelEnumToNumber(adminLevel)}
+                            mapOpen={mapOpen}
+                            onToggleMap={() => setMapOpen((open) => !open)}
+                            headerClassName="min-w-0 lg:col-span-2"
+                            cardClassName="h-full min-w-0"
+                        />
+                    </div>
+                    {/* Sticks to the top of the viewport while the (taller) selected-areas card scrolls. */}
+                    <div className="min-w-0 self-start overflow-hidden lg:sticky lg:top-6">
+                        <SelectedAreasMap
+                            open={mapOpen}
+                            gids={selectedAreas}
+                            countryGids={countries.map((country) => country.GID_0)}
+                        />
+                    </div>
+                </div>
                 <Button
                     onClick={handleSubmit}
                     disabled={selectedAreas.length === 0}

@@ -5,9 +5,16 @@ import { GADMAreas } from "@/types";
 import { useTranslation } from "react-i18next";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import React from "react";
+import classNames from "classnames";
 
 interface SelectedAreaListProps {
     level: number;
+    /** Shows a "Preview map" / "Hide map" button in the header when set. */
+    onToggleMap?: () => void;
+    mapOpen?: boolean;
+    /** Extra classes for the header row and the card (e.g. grid placement by the parent). */
+    headerClassName?: string;
+    cardClassName?: string;
 }
 
 type Leaf = { gid: string; name: string };
@@ -60,7 +67,7 @@ function collectRowGids(node: GroupNode, depth: number, level: number, out: stri
     return out;
 }
 
-export const SelectedAreaList: React.FC<SelectedAreaListProps> = ({ level }) => {
+export const SelectedAreaList: React.FC<SelectedAreaListProps> = ({ level, onToggleMap, mapOpen = false, headerClassName, cardClassName }) => {
     const { selectedAreas, downLoadedAreas, removeSelectedArea } = useDITStore();
     const { t } = useTranslation();
 
@@ -139,21 +146,35 @@ export const SelectedAreaList: React.FC<SelectedAreaListProps> = ({ level }) => 
 
     return (
         <>
-            <div className="flex flex-row items-center justify-between gap-4">
+            <div className={classNames("flex flex-row items-center justify-between gap-4", headerClassName)}>
                 <span className="font-outfit font-extrabold text-[2rem] text-wpBlue">
                     {t("areaSelector.selectedAreasTitle")}
                 </span>
-                {!isEmpty && hasRows && (
-                    <button
-                        type="button"
-                        onClick={toggleAll}
-                        className="font-inter font-semibold text-sm text-wpBlue underline underline-offset-2 hover:opacity-80"
-                    >
-                        {anyCollapsed ? t("areaSelector.expandAll") : t("areaSelector.collapseAll")}
-                    </button>
+                {!isEmpty && (
+                    <div className="flex flex-row items-center gap-4">
+                        {hasRows && (
+                            <button
+                                type="button"
+                                onClick={toggleAll}
+                                className="font-inter font-semibold text-sm text-wpBlue underline underline-offset-2 hover:opacity-80"
+                            >
+                                {anyCollapsed ? t("areaSelector.expandAll") : t("areaSelector.collapseAll")}
+                            </button>
+                        )}
+                        {onToggleMap && (
+                            <button
+                                type="button"
+                                onClick={onToggleMap}
+                                aria-pressed={mapOpen}
+                                className="font-inter font-semibold text-sm text-wpBlue underline underline-offset-2 hover:opacity-80"
+                            >
+                                {mapOpen ? t("areaSelector.hideMap") : t("areaSelector.previewMap")}
+                            </button>
+                        )}
+                    </div>
                 )}
             </div>
-            <Card className="min-h-40 bg-white p-4 rounded-[8px] flex flex-col justify-center gap-3">
+            <Card className={classNames("min-h-40 lg:min-h-[var(--map-height,420px)] bg-white p-4 rounded-[8px] flex flex-col justify-center gap-3", cardClassName)}>
                 {isEmpty && <span className=" font-inter font-semibold text-2xl text-wpBlue text-center">
                     {t("areaSelector.noSelectedAreas")}
                 </span>}

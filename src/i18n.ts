@@ -87,6 +87,13 @@ i18n
             dropdown: {
               selectAll: "Select all",
             },
+            previewMap: "Preview map",
+            hideMap: "Hide map",
+            map: {
+              loading: "Loading map…",
+              loadingHint: "This may take a while...",
+              error: "The selected areas could not be drawn on the map.",
+            },
             miller: {
               level: "Level {{level}}",
               country: "Country",

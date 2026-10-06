@@ -11,6 +11,17 @@ const gidLevel = (gid: string) => gid.split(".").length - 1;
  * fetched per country and admin level from /api/geodata/geometries and
  * filtered to the selected GADM ids.
  */
+/**
+ * Polygons of specific GADM ids (e.g. ["UGA.1_1", "UGA.2_1"]) from
+ * POST /api/geodata/get-geometries, which takes the ids as its JSON body and
+ * returns one Feature per id. Used by the Specify areas map.
+ */
+export const fetchSelectedAreaGeometries = async (gids: string[], signal?: AbortSignal): Promise<FeatureCollection> => {
+  if (gids.length === 0) return { type: "FeatureCollection", features: [] };
+  const result = await api.post<FeatureCollection>("https://dev.waterpath.venthic.com/api/geodata/get-geometries", gids, { signal });
+  return result.data;
+};
+
 export const fetchAreaGeometries = async (gids: string[]): Promise<FeatureCollection> => {
   const groups = new Map<string, { country: string; level: number; gids: Set<string> }>();
   gids.forEach((gid) => {
