@@ -23,13 +23,13 @@ jobs:
         uses: bahmutov/npm-install@v1
 
       - name: Build project
-        run: npm run build_ghpages
+        run: npm run build:ghpages
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v4
         with:
           name: production-files
-          path: ./dist
+          path: ./dist-ghpages
 
   deploy:
     name: Deploy

@@ -4,7 +4,9 @@ import { useMap } from "react-leaflet";
 import GeoRasterLayer from "georaster-layer-for-leaflet";
 import parseGeoraster from "georaster";
 import type { FeatureCollection } from "geojson";
-import "@/lib/proj4Setup";
+import { ensureProj4 } from "@/lib/proj4Setup";
+
+ensureProj4();
 
 export type RasterStats = { min: number; max: number };
 

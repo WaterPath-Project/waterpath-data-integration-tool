@@ -1,35 +1,20 @@
-import { Home, NotFound, Finetune, Success } from "./components/pages";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { CountriesProvider } from "./context/CountriesProvider";
-import { Toaster } from "sonner";
-import { BrowserRouter, Route, Routes } from "react-router";
-import { Areas } from "./components/pages/Areas";
 import React from "react";
+import { DataIntegrationTool } from "./DataIntegrationTool";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
-});
-
+/**
+ * Standalone site (`npm run dev`, GitHub Pages). Path-based routing under the Pages base
+ * path; `?session=<id>` reopens an existing session on the "Preview data" step.
+ */
 function App(): React.JSX.Element {
+  const session = new URLSearchParams(window.location.search).get("session") ?? undefined;
   return (
-    <BrowserRouter basename="/waterpath-data-integration-tool/" >
-      <QueryClientProvider client={queryClient}>
-        <CountriesProvider>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/areas" element={<Areas />} />
-            <Route path="/finetune/:session_id?" element={<Finetune />} />
-            <Route path="/success/:session_id?" element={<Success />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Toaster richColors />
-        </CountriesProvider>
-      </QueryClientProvider>
-    </BrowserRouter>
+    <DataIntegrationTool
+      router="browser"
+      basename="/waterpath-data-integration-tool/"
+      apiBaseUrl={import.meta.env.VITE_API_BASE_URL}
+      initialSessionId={session}
+      className="min-h-screen bg-wpWhite"
+    />
   );
 }
 

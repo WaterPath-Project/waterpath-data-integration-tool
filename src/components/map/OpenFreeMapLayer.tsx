@@ -3,6 +3,7 @@ import L from "leaflet";
 import { useMap } from "react-leaflet";
 import type { StyleSpecification } from "maplibre-gl";
 import "@maplibre/maplibre-gl-leaflet";
+import { registerMaplibreWorker } from "@/lib/maplibreWorker";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { createMinimalStyle } from "./minimalStyle";
 
@@ -54,6 +55,7 @@ export function OpenFreeMapLayer({ styleId = "bright" }: OpenFreeMapLayerProps) 
       style: isMinimal ? createMinimalStyle() : styleUrl,
       attribution: ATTRIBUTION,
     };
+    registerMaplibreWorker();
     const baseLayer = L.maplibreGL(baseOptions).addTo(map);
 
     let active = true;

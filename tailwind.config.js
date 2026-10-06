@@ -2,6 +2,17 @@
 module.exports = {
   darkMode: ["class"],
   content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
+  // The tool is embedded in other sites. Every utility is generated as `.wp-dit .class`
+  // (the component's root), so it only applies inside the tool and beats the host's own
+  // utility classes there by specificity. The global preflight is replaced by the scoped
+  // reset in src/index.css.
+  important: ".wp-dit",
+  corePlugins: {
+    preflight: false,
+    // `.container` is a component, not a utility, so `important` does not scope it; a scoped
+    // version lives in src/index.css.
+    container: false,
+  },
   theme: {
     extend: {
       fontFamily: {

@@ -33,7 +33,7 @@ export function DocumentationAction({ subcategory, sessionId, fileId, scenario }
             params.set("year", scenario.year);
         }
         const result = await api.get(
-            `https://dev.waterpath.venthic.com/api/data/input/download?${params.toString()}`,
+            `/api/data/input/download?${params.toString()}`,
         );
         return result.data;
     };

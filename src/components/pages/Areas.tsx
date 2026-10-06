@@ -32,7 +32,7 @@ export function Areas() {
 
     const fetchAreasByCountry = async (countryId: string, adminLevel: number) => {
         const result = await api.get(
-            `https://dev.waterpath.venthic.com/api/geodata/get-areas?country_code=${countryId}&level=${adminLevel}`,
+            `/api/geodata/get-areas?country_code=${countryId}&level=${adminLevel}`,
         );
         return result.data;
     };

@@ -1,8 +1,10 @@
 import { useEffect } from "react";
 import { useMap } from "react-leaflet";
 import parseGeoraster from "georaster";
-import "@/lib/proj4Setup";
+import { ensureProj4 } from "@/lib/proj4Setup";
 import { FlowFeature, FlowVectors, buildFlowVectorsFromGeoraster, findFeatureCollection } from "@/lib/flowVectors";
+
+ensureProj4();
 
 export type FlowLegendData = {
   minDis: number | null;

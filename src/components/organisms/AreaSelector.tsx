@@ -43,9 +43,9 @@ export function AreaSelector() {
         setLoading(true);
 
         try {
-            await api.post(`https://dev.waterpath.venthic.com/api/session/create/?session_id=${newSessionId}`);
+            await api.post(`/api/session/create/?session_id=${newSessionId}`);
             const result = await api.post(
-                `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${newSessionId}&gids=${selectedAreas.join(",")}&include_livestock=${hasLivestockEmissions}&include_hydrology=${hasHydrology}&include_qmra=${hasRisks}`
+                `/api/data/input/generate?session_id=${newSessionId}&gids=${selectedAreas.join(",")}&include_livestock=${hasLivestockEmissions}&include_hydrology=${hasHydrology}&include_qmra=${hasRisks}`
             );
 
             setDocumentation(result.data.resources);

@@ -1,9 +1,247 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-wpWhite;
+/* Tailwind's `.container`, scoped like the utilities (the core plugin is disabled). */
+@layer components {
+  .wp-dit .container {
+    width: 100%;
+  }
+  @media (min-width: 640px) {
+    .wp-dit .container {
+      max-width: 640px;
+    }
+  }
+  @media (min-width: 768px) {
+    .wp-dit .container {
+      max-width: 768px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .wp-dit .container {
+      max-width: 1024px;
+    }
+  }
+  @media (min-width: 1280px) {
+    .wp-dit .container {
+      max-width: 1280px;
+    }
+  }
+  @media (min-width: 1536px) {
+    .wp-dit .container {
+      max-width: 1536px;
+    }
+  }
+}
+
+/*
+ * Scoped reset.
+ *
+ * Tailwind's global preflight is disabled (see tailwind.config.js) so that the tool never
+ * restyles the page that embeds it. The rules below are the parts of preflight the
+ * components depend on, applied only inside the tool's `.wp-dit` root and the `.wp-dit`
+ * portal container used by dialogs, popovers and selects. Fonts (Inter, Outfit) are expected
+ * from the host; the standalone index.html loads them from Google Fonts.
+ */
+@layer base {
+  .wp-dit {
+    /* shadcn radius scale; rounded-sm/md/lg derive from it */
+    --radius: 0.5rem;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    font-family: theme('fontFamily.inter');
+    font-feature-settings: normal;
+    font-variation-settings: normal;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .wp-dit *,
+  .wp-dit ::before,
+  .wp-dit ::after {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: theme('borderColor.DEFAULT', currentColor);
+  }
+
+  .wp-dit ::before,
+  .wp-dit ::after {
+    --tw-content: '';
+  }
+
+  .wp-dit hr {
+    height: 0;
+    color: inherit;
+    border-top-width: 1px;
+  }
+
+  .wp-dit h1,
+  .wp-dit h2,
+  .wp-dit h3,
+  .wp-dit h4,
+  .wp-dit h5,
+  .wp-dit h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
+  .wp-dit a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  .wp-dit b,
+  .wp-dit strong {
+    font-weight: bolder;
+  }
+
+  .wp-dit code,
+  .wp-dit kbd,
+  .wp-dit samp,
+  .wp-dit pre {
+    font-family: theme('fontFamily.mono');
+    font-size: 1em;
+  }
+
+  .wp-dit small {
+    font-size: 80%;
+  }
+
+  .wp-dit table {
+    text-indent: 0;
+    border-color: inherit;
+    border-collapse: collapse;
+  }
+
+  .wp-dit button,
+  .wp-dit input,
+  .wp-dit optgroup,
+  .wp-dit select,
+  .wp-dit textarea {
+    font-family: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    font-size: 100%;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    margin: 0;
+    padding: 0;
+  }
+
+  .wp-dit button,
+  .wp-dit select {
+    text-transform: none;
+  }
+
+  .wp-dit button,
+  .wp-dit input:where([type='button']),
+  .wp-dit input:where([type='reset']),
+  .wp-dit input:where([type='submit']) {
+    -webkit-appearance: button;
+    background-color: transparent;
+    background-image: none;
+  }
+
+  .wp-dit :-moz-focusring {
+    outline: auto;
+  }
+
+  .wp-dit ::-webkit-inner-spin-button,
+  .wp-dit ::-webkit-outer-spin-button {
+    height: auto;
+  }
+
+  .wp-dit [type='search'] {
+    -webkit-appearance: textfield;
+    outline-offset: -2px;
+  }
+
+  .wp-dit ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+
+  .wp-dit summary {
+    display: list-item;
+  }
+
+  .wp-dit blockquote,
+  .wp-dit dl,
+  .wp-dit dd,
+  .wp-dit h1,
+  .wp-dit h2,
+  .wp-dit h3,
+  .wp-dit h4,
+  .wp-dit h5,
+  .wp-dit h6,
+  .wp-dit hr,
+  .wp-dit figure,
+  .wp-dit p,
+  .wp-dit pre {
+    margin: 0;
+  }
+
+  .wp-dit fieldset {
+    margin: 0;
+    padding: 0;
+  }
+
+  .wp-dit legend {
+    padding: 0;
+  }
+
+  .wp-dit ol,
+  .wp-dit ul,
+  .wp-dit menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .wp-dit dialog {
+    padding: 0;
+  }
+
+  .wp-dit textarea {
+    resize: vertical;
+  }
+
+  .wp-dit input::placeholder,
+  .wp-dit textarea::placeholder {
+    opacity: 1;
+    color: theme('colors.gray.400');
+  }
+
+  .wp-dit button,
+  .wp-dit [role="button"] {
+    cursor: pointer;
+  }
+
+  .wp-dit :disabled {
+    cursor: default;
+  }
+
+  .wp-dit img,
+  .wp-dit svg,
+  .wp-dit video,
+  .wp-dit canvas,
+  .wp-dit audio,
+  .wp-dit iframe,
+  .wp-dit embed,
+  .wp-dit object {
+    display: block;
+    vertical-align: middle;
+  }
+
+  .wp-dit img,
+  .wp-dit video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .wp-dit [hidden]:where(:not([hidden="until-found"])) {
+    display: none;
+  }
 }

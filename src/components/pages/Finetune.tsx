@@ -49,7 +49,7 @@ export function Finetune() {
     // without its extension. Returning undefined here would make TanStack Query throw.
     const getSessionData = async (): Promise<Documentation[]> => {
         const result = await api.get<string[] | { resources?: Documentation[] }>(
-            `https://dev.waterpath.venthic.com/api/session/?session_id=${session_id}`,
+            `/api/session/?session_id=${session_id}`,
         );
         const data = result.data;
         if (!Array.isArray(data)) {
@@ -83,7 +83,7 @@ export function Finetune() {
 
     const downloadDocumentation = async () => {
         const result = await api.get(
-            `https://dev.waterpath.venthic.com/api/data/input/download?session_id=${session_id}`,
+            `/api/data/input/download?session_id=${session_id}`,
             {
                 responseType: 'blob'
             }
@@ -99,7 +99,7 @@ export function Finetune() {
 
     const summarizeInput = async (): Promise<SummarizeResponse> => {
         const result = await api.get<SummarizeResponse>(
-            `https://dev.waterpath.venthic.com/api/data/input/summarize?session_id=${session_id}`,
+            `/api/data/input/summarize?session_id=${session_id}`,
         );
         return result.data;
     };

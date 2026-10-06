@@ -56,7 +56,7 @@ export function NewScenarioDialog({ open, onOpenChange, sessionId, categories, s
             ssp: sspParam(ssp),
         });
         const result = await api.post(
-            `https://dev.waterpath.venthic.com/api/data/projections/generate?${params.toString()}`,
+            `/api/data/projections/generate?${params.toString()}`,
         );
         return result.data;
     };

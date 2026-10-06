@@ -21,6 +21,8 @@
     "noUncheckedSideEffectImports": true
   },
   "include": [
+    "vite.config.ts",
     "vite.config.function.ts",
+    "vite.config.ghpages.ts"
   ]
 }

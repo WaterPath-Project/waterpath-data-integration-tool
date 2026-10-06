@@ -5,12 +5,20 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { usePortalContainer } from "@/context/PortalContainerProvider"
 
 const Dialog = DialogPrimitive.Root
 
 const DialogTrigger = DialogPrimitive.Trigger
 
-const DialogPortal = DialogPrimitive.Portal
+/** Portals into the tool's `.wp-dit` container so the dialog keeps the tool's styles. */
+const DialogPortal = ({
+  container,
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Portal>) => {
+  const scopedContainer = usePortalContainer()
+  return <DialogPrimitive.Portal container={container ?? scopedContainer} {...props} />
+}
 
 const DialogClose = DialogPrimitive.Close
 

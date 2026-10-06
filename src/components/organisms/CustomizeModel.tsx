@@ -37,9 +37,9 @@ export function CustomizeModel() {
     setSessionId(newSessionId);
 
     try {
-      await api.post(`https://dev.waterpath.venthic.com/api/session/create/?session_id=${newSessionId}`);
+      await api.post(`/api/session/create/?session_id=${newSessionId}`);
       const result = await api.post(
-        `https://dev.waterpath.venthic.com/api/data/input/generate?session_id=${newSessionId}&gids=${countries.map(country => country.GID_0).join(",")}&include_livestock=${hasLivestockEmissions}&include_hydrology=${hasHydrology}&include_qmra=${hasRisks}`
+        `/api/data/input/generate?session_id=${newSessionId}&gids=${countries.map(country => country.GID_0).join(",")}&include_livestock=${hasLivestockEmissions}&include_hydrology=${hasHydrology}&include_qmra=${hasRisks}`
       );
 
       setDocumentation(result.data.resources);

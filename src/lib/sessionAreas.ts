@@ -52,7 +52,7 @@ export function parseGidColumn(csv: string): string[] {
 export async function fetchSessionAreaGids(sessionId: string): Promise<string[]> {
   const params = new URLSearchParams({ session_id: sessionId, file_id: "population" });
   const result = await api.get<string>(
-    `https://dev.waterpath.venthic.com/api/data/input/download?${params.toString()}`,
+    `/api/data/input/download?${params.toString()}`,
     { responseType: "text" },
   );
   return parseGidColumn(result.data);

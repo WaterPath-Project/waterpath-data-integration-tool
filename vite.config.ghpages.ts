@@ -2,6 +2,7 @@ import path from "path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
+/** Standalone site (`npm run dev`, `npm run build:ghpages`) deployed to GitHub Pages. */
 export default defineConfig({
   plugins: [react()],
   assetsInclude: ["**/*.riv"],
@@ -17,7 +18,8 @@ export default defineConfig({
     // so both it and the Leaflet plugin that inlines it must be served from node_modules directly.
     exclude: ["maplibre-gl", "@maplibre/maplibre-gl-leaflet"],
   },
-  define: {
-    "process.env": process.env,
+  build: {
+    outDir: "dist-ghpages",
+    emptyOutDir: true,
   },
 });

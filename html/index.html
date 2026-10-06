@@ -1,17 +1,28 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
 
 <head>
-  <title>Test Data Integration Tool</title>
-  <!--LINK BUILD FILE-->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Data Integration Tool (script-tag build)</title>
+  <!-- The tool expects the Inter and Outfit fonts from the host page. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&display=swap"
+    rel="stylesheet">
 </head>
 
-<body>
-  <script type="text/javascript" src="data-integration-tool.js"></script>
-  <!-- Your web page -->
-  <div id="root" style="width: 100%; height: 400px"></div>
+<body style="margin:0;background:#F6F9FB">
+  <!-- Build with `npm run build:embed`, then copy dist-embed/ next to this file. -->
+  <script src="data-integration-tool.js"></script>
+  <div id="root"></div>
   <script>
-    dataIntegrationTool("root");
+    const unmount = dataIntegrationTool("root", {
+      // apiBaseUrl: "https://dev.waterpath.venthic.com",
+      // sessionId: "...",
+      router: "hash",
+    });
   </script>
 </body>
 

@@ -18,7 +18,7 @@ const gidLevel = (gid: string) => gid.split(".").length - 1;
  */
 export const fetchSelectedAreaGeometries = async (gids: string[], signal?: AbortSignal): Promise<FeatureCollection> => {
   if (gids.length === 0) return { type: "FeatureCollection", features: [] };
-  const result = await api.post<FeatureCollection>("https://dev.waterpath.venthic.com/api/geodata/get-geometries", gids, { signal });
+  const result = await api.post<FeatureCollection>("/api/geodata/get-geometries", gids, { signal });
   return result.data;
 };
 
@@ -36,7 +36,7 @@ export const fetchAreaGeometries = async (gids: string[]): Promise<FeatureCollec
   const collections = await Promise.all(
     [...groups.values()].map(async ({ country, level, gids: wanted }) => {
       const params = new URLSearchParams({ admin: country, level: String(level) });
-      const result = await api.post<FeatureCollection>(`https://dev.waterpath.venthic.com/api/geodata/geometries?${params.toString()}`);
+      const result = await api.post<FeatureCollection>(`/api/geodata/geometries?${params.toString()}`);
       const features = (result.data?.features ?? []) as Feature[];
       const gidKey = `GID_${level}`;
       return features.filter((feature) => wanted.has(String(feature.properties?.[gidKey] ?? "")));

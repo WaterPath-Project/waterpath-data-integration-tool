@@ -8,6 +8,9 @@ declare global {
   }
 }
 
-window.proj4 = proj4;
-
-export {};
+/** Exposes proj4 on `window`, where georaster-layer-for-leaflet looks for it. Safe to call repeatedly and during SSR. */
+export function ensureProj4(): void {
+  if (typeof window !== "undefined" && !window.proj4) {
+    window.proj4 = proj4;
+  }
+}

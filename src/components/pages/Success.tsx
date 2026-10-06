@@ -26,7 +26,7 @@ export function Success(): React.ReactElement {
 
     const downloadDocumentation = async () => {
         const result = await api.get(
-            `https://dev.waterpath.venthic.com/api/data/input/download?session_id=${session_id}`,
+            `/api/data/input/download?session_id=${session_id}`,
             {
                 responseType: 'blob'
             }

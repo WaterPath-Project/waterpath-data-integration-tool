@@ -86,7 +86,7 @@ export const fetchPreview = async ({ sessionId, file, scenario, dimension }: Pre
   }
   if (dimension) params.set("dimension", dimension);
   const result = await api.post<ArrayBuffer>(
-    `https://dev.waterpath.venthic.com/api/geodata/preview?${params.toString()}`,
+    `/api/geodata/preview?${params.toString()}`,
     null,
     { responseType: "arraybuffer" },
   );
