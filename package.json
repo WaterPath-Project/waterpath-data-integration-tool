@@ -1,6 +1,6 @@
 {
   "name": "waterpath-data-integration-tool",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "WaterPath Data Integration Tool: the GloWPa input-data wizard as an embeddable React component",
   "type": "module",
   "main": "./dist/index.cjs",
