@@ -108,6 +108,14 @@ i18n
               "Review the input data generated for your selection. Each category below lists the datasets you can download or preview.",
             downloadButton: "Download",
             uploadButton: "Upload",
+            upload: {
+              button: "Upload {{types}} file",
+              uploading: "Uploading…",
+              uploaded: "{{name}} uploaded",
+              invalidType: "Only {{types}} files are accepted.",
+              successMessage: "Your file was uploaded successfully.",
+              errorMessage: "The file could not be uploaded. Please try again.",
+            },
             previewButton: "Preview",
             previewTitle: "CSV Preview",
             previewDescription: "This is a preview of the generated data in CSV format.",
@@ -235,6 +243,8 @@ i18n
                 "Hydrological inputs currently available represent interim datasets. Standardized and updated hydrological data layers will be released in Spring 2027, following the release of the <isimip4>ISIMIP4 simulation round</isimip4>.",
               description:
                 "Data used to model the transport, survival, and resulting concentrations of pathogens in surface water.",
+              upload:
+                "Do you have your own hydrological inputs? Upload them as a .zip file to use them instead of the generated data for this session.",
             },
             hydrology_variables: {
               title: "Hydrology variables",

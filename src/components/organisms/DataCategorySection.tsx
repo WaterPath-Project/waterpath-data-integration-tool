@@ -3,6 +3,7 @@ import { InfoIcon } from "lucide-react";
 import { DataCategory } from "@/lib/dataCategories";
 import { Scenario } from "@/lib/scenarios";
 import { DocumentationAction } from "../molecules/DocumentationAction";
+import { CategoryUploadAction } from "../molecules/CategoryUploadAction";
 import { GeodataMapPreview } from "../molecules/GeodataMapPreview";
 
 type DataCategorySectionProps = {
@@ -65,6 +66,12 @@ export function DataCategorySection({ category, sessionId, scenario }: DataCateg
           )}
         </div>
       ))}
+      {category.upload && !scenario && (
+        <>
+          <div className="border border-wpBlue-500"></div>
+          <CategoryUploadAction machineName={category.machineName} upload={category.upload} sessionId={sessionId} />
+        </>
+      )}
     </>
   );
 

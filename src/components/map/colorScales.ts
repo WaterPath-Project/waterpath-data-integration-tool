@@ -79,5 +79,14 @@ export function legendTicks(scale: RasterColorScale, max: number): number[] {
     if (max > ticks[ticks.length - 1] * 1.5) ticks.push(max);
     return ticks;
   }
+  // Quarters of a small maximum round to repeated labels (0 0 1 1 1), so use
+  // whole-number steps there and let the legend end at the true maximum.
+  if (max < 8) {
+    const step = max <= 4 ? 1 : 2;
+    const ticks: number[] = [];
+    for (let v = 0; v <= max; v += step) ticks.push(v);
+    if (max - ticks[ticks.length - 1] > step / 2) ticks.push(max);
+    return ticks;
+  }
   return [0, 0.25, 0.5, 0.75, 1].map((f) => f * max);
 }

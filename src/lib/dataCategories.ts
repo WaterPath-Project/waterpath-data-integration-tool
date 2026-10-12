@@ -36,6 +36,13 @@ export type DataCategory = {
    * needed when the backend uses a different name (e.g. "qmra" for risk).
    */
   sessionMarkers?: string[];
+  /**
+   * Lets the user replace the generated data with their own file, sent to
+   * POST /api/data/input/upload with this `file_id`. `accept` lists the allowed
+   * extensions (lower case, with the dot). Text lives in i18n under
+   * `dataCategories.<machineName>.upload`.
+   */
+  upload?: { fileId: string; accept: string[] };
 };
 
 export const dataCategories: DataCategory[] = [
@@ -63,6 +70,7 @@ export const dataCategories: DataCategory[] = [
     machineName: "hydrology",
     icon: "concentrations.svg",
     mapPreview: "hydrology",
+    upload: { fileId: "hydrology", accept: [".zip"] },
     subcategories: [{ machineName: "hydrology_variables", icon: "concentrations.svg" }],
   },
   {
