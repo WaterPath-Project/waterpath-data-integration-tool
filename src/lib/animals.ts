@@ -9,7 +9,7 @@ export const LIVESTOCK_ANIMALS = [
   "camels",
   "cattle",
   "chickens",
-  "donkeys",
+  "mules",
   "ducks",
   "goats",
   "horses",
