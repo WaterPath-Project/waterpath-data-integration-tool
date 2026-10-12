@@ -156,7 +156,7 @@ i18n
                 camels: "Camels",
                 cattle: "Cattle",
                 chickens: "Chickens",
-                donkeys: "Donkeys",
+                mules: "Mules",
                 ducks: "Ducks",
                 goats: "Goats",
                 horses: "Horses",
